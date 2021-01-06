@@ -20,3 +20,4 @@ function randstr(
 }
 
 require_once 'Config/App.php';
+require_once 'Helpers/twig.php';

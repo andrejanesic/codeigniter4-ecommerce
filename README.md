@@ -19,6 +19,7 @@ You can also configure your services to update external marketing APIs (ActiveCa
 2. **Install the dependencies:**
 
    - [Omnipay](https://packagist.org/packages/omnipay/common): `composer require omnipay/common`
+   - [Twig](https://twig.symfony.com/): `composer require twig/twig` (optional, if you need Twig rendering)
 
 3. **Add the library:**
 
