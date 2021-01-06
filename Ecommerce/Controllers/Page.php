@@ -6,6 +6,11 @@ use CodeIgniter\Controller;
 use Ecommerce\Config\Ecommerce;
 use Ecommerce\Config\Services;
 
+/**
+ * Page controller can be used for building simple, front-end marketing pages.
+ * Analytics and client tracking are automatically handled, so all you have to
+ * worry about is creating the actual view and response.
+ */
 class Page extends Controller {
 
   /**

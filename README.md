@@ -23,16 +23,19 @@ You can also configure your services to update external marketing APIs (ActiveCa
 3. **Add the library:**
 
    Inside `app/Config/Autoload.php`, locate the `$ps4` array, and append the following line:
-   `  'Ecommerce'  => APPPATH . 'ThirdParty/Ecommerce',`
+
+   `'Ecommerce'  => APPPATH . 'ThirdParty/Ecommerce',`
 
 4. **Add the validation rules:**
 
    Inside `app/Config/Validation.php`, locate the `$ruleSets` array, and append the following line:
+
    `\Ecommerce\Validation\OrderRules::class,`
 
 5. **Add Common.php:**
 
    Open `app/Common.php` and append the following line to the end:
+
    `require_once 'ThirdParty' . DIRECTORY_SEPARATOR . 'Ecommerce' . DIRECTORY_SEPARATOR . 'Common.php';`
 
 6. **Configure:**
