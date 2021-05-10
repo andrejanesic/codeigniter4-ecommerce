@@ -2,14 +2,12 @@
 
 namespace Ecommerce\Analytics\InternalAnalytics;
 
-use Ecommerce\Models\UIDModel;
+use CodeIgniter\Model;
 
-class ViewModel extends UIDModel {
+class ViewModel extends Model {
 
-  protected $name = 'view';
   protected $table = 'views';
   protected $primaryKey = 'view_id';
-  protected $uidKey = 'view_id';
   protected $allowedFields = [
     'session_id',
     'path',

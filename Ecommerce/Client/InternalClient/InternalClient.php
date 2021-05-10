@@ -11,7 +11,18 @@ class InternalClient implements ClientInterface {
 
   use IPublisher;
 
+  /**
+   * Client data
+   *
+   * @var array
+   */
   private $data = null;
+
+  /**
+   * ClientModel instance used by service
+   *
+   * @var ClientModel
+   */
   private $model = null;
 
   /**
@@ -65,7 +76,8 @@ class InternalClient implements ClientInterface {
   }
 
   /**
-   * Initializes the client
+   * Initializes the client. Must be called before the client can be used
+   * (call in constructor method.)
    *
    * @return void
    */
@@ -90,12 +102,12 @@ class InternalClient implements ClientInterface {
    * @return void
    */
   private function new() {
-    // generate uid
-    $uid = randstr(255);
+    // generate uuid
+    $uuid = randstr(16);
 
     // insert into db
     $data = [
-      'client_uid' => $uid
+      'client_uuid' => $uuid
     ];
     if ($this->model === null)
       $this->model = new ClientModel();
@@ -129,36 +141,36 @@ class InternalClient implements ClientInterface {
    * @return boolean True if successfully loaded, else false
    */
   private function load(): bool {
-    $clientUid = null;
+    $clientUuid = null;
 
     // try to load from session
     if (session(S__CLIENT_AUTH) === true)
-      $clientUid = session(S__CLIENT_UID);
+      $clientUuid = session(S__CLIENT_UUID);
 
     // try to load from cookie
-    if (!$clientUid) {
+    if (!$clientUuid) {
       helper('cookie');
       $s = get_cookie(C__CLIENT);
       if ($s !== null) {
         $s = explode(':', $s);
 
         if (sizeof($s) === 2) {
-          $uid = $s[0];
+          $uuid = $s[0];
           $token = $s[1];
 
           // check if the token is good
-          if ($this->authenticate(1, $uid, $token))
-            $clientUid = $uid;
+          if ($this->authenticate(1, $uuid, $token))
+            $clientUuid = $uuid;
         }
       }
     }
 
     // if loading succeeded, enter the data into the class
-    if ($clientUid !== null) {
+    if ($clientUuid !== null) {
       if ($this->model === null)
         $this->model = new ClientModel();
       $this->data = $this->model->asArray()
-        ->where(['client_uid' => $clientUid])
+        ->where(['client_uuid' => $clientUuid])
         ->first();
       return true;
     }
@@ -174,7 +186,7 @@ class InternalClient implements ClientInterface {
   private function save(): void {
     // set client as authenticated in session
     session()->set(S__CLIENT_AUTH, true);
-    $uid = $this->data['client_uid'];
+    $uuid = $this->data['client_uuid'];
 
     // generate new token
     $tokenRaw = randstr(255);
@@ -190,7 +202,7 @@ class InternalClient implements ClientInterface {
 
     // set the client's cookie
     helper('cookie');
-    $str = $uid . ':' . $tokenRaw;
+    $str = $uuid . ':' . $tokenRaw;
     $days = 3650;
     set_cookie(C__CLIENT, $str, $days * 24 * 60 * 60);
 
@@ -203,19 +215,20 @@ class InternalClient implements ClientInterface {
    * Checks whether secret matches client's credentials
    *
    * @param integer $mode 0 = password, 1 = token
-   * @param string $uid Client UID
+   * @param string $uuid Client UID
    * @param string $secret Secret value
    * @return boolean
    */
-  private function authenticate(int $mode, string $uid, string $secret): bool {
+  private function authenticate(int $mode, string $uuid, string $secret): bool {
     // firstly check if UID passes
     $validator = service('validation');
     $validator->setRules([
-      'client_uid' => 'required|string|max_length[255]',
+      'client_uuid' => 'required|string|max_length[255]',
       'secret' => 'required|string|max_length[255]'
     ]);
+    
     if (!$validator->run([
-      'client_uid' => $uid,
+      'client_uuid' => $uuid,
       'secret' => $secret
     ]))
       return false;
@@ -225,7 +238,7 @@ class InternalClient implements ClientInterface {
       $this->model = new ClientModel();
     $data = $this->model->asArray()
       ->where([
-        'client_uid' => $uid
+        'client_uuid' => $uuid
       ])
       ->first();
     if (!$data) return false;

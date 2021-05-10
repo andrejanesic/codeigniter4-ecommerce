@@ -11,8 +11,8 @@ class InternalProduct implements ProductInterface {
     $this->price = $price;
   }
 
-  public function getId(): string {
-    return $this->id;
+  public function getId(): int {
+    return intval($this->id);
   }
 
   public function getPrice(): float {

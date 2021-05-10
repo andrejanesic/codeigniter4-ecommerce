@@ -2,14 +2,12 @@
 
 namespace Ecommerce\Analytics\InternalAnalytics;
 
-use Ecommerce\Models\UIDModel;
+use CodeIgniter\Model;
 
-class ClickModel extends UIDModel {
+class ClickModel extends Model {
 
-  protected $name = 'click';
   protected $table = 'clicks';
   protected $primaryKey = 'click_id';
-  protected $uidKey = 'click_id';
   protected $allowedFields = [
     'session_id',
     'path',

@@ -2,14 +2,12 @@
 
 namespace Ecommerce\Analytics\InternalAnalytics;
 
-use Ecommerce\Models\UIDModel;
+use CodeIgniter\Model;
 
-class SessionModel extends UIDModel {
+class SessionModel extends Model {
 
-  protected $name = 'session';
   protected $table = 'sessions';
   protected $primaryKey = 'session_id';
-  protected $uidKey = 'session_id';
   protected $allowedFields = [
     'client_id',
     'utm_campaign',

@@ -16,6 +16,12 @@ use Omnipay\Omnipay;
 
 class Services extends CoreServices {
 
+	/**
+	 * Service for processing analytics.
+	 *
+	 * @param boolean $getShared
+	 * @return AnalyticsInterface
+	 */
 	public static function analytics($getShared = true): AnalyticsInterface {
 		if ($getShared) {
 			return static::getSharedInstance('analytics');
@@ -24,6 +30,12 @@ class Services extends CoreServices {
 		return new InternalAnalytics();
 	}
 
+	/**
+	 * Service for client management.
+	 *
+	 * @param boolean $getShared
+	 * @return ClientInterface
+	 */
 	public static function client($getShared = true): ClientInterface {
 		if ($getShared) {
 			return static::getSharedInstance('client');
@@ -32,6 +44,12 @@ class Services extends CoreServices {
 		return new InternalClient();
 	}
 
+	/**
+	 * Service for cart management.
+	 *
+	 * @param boolean $getShared
+	 * @return CartInterface
+	 */
 	public static function cart($getShared = true): CartInterface {
 		if ($getShared) {
 			return static::getSharedInstance('cart');
@@ -64,6 +82,12 @@ class Services extends CoreServices {
 		}
 	}
 
+	/**
+	 * Service for tag management.
+	 *
+	 * @param boolean $getShared
+	 * @return TagInterface
+	 */
 	public static function tags($getShared = true): TagInterface {
 		if ($getShared) {
 			return static::getSharedInstance('tags');

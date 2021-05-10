@@ -2,16 +2,15 @@
 
 namespace Ecommerce\Client;
 
-use Ecommerce\Models\UIDModel;
+use CodeIgniter\Model;
 
-class ClientModel extends UIDModel {
+class ClientModel extends Model {
 
-  protected $name = 'client';
   protected $table = 'clients';
   protected $primaryKey = 'client_id';
-  protected $uidKey = 'client_uid';
+  protected $useSoftDeletes = true;
   protected $allowedFields = [
-    'client_uid',
+    'client_uuid',
     'password',
     'token',
     'email',
@@ -26,18 +25,5 @@ class ClientModel extends UIDModel {
     'address2',
     'last_ip'
   ];
-  protected $beforeUpdate = ['beforeUpdate'];
 
-  /**
-   * Sets the email field if client_uid is set
-   *
-   * @param array $data
-   * @return mixed
-   */
-  protected function beforeUpdate(array $data) {
-    if (isset($data['data']['client_uid'])) {
-      $data['data']['email'] = $data['data']['client_uid'];
-    }
-    return $data;
-  }
 }

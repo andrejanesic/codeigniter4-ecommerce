@@ -5,14 +5,14 @@ namespace Ecommerce\Cart;
 interface ProductInterface {
 
   /**
-   * Returns the product's ID
+   * Returns the product ID
    *
    * @return string
    */
-  public function getId(): string;
+  public function getId(): int;
 
   /**
-   * Returns the product's price
+   * Returns the product price
    *
    * @return float
    */

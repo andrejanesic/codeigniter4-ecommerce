@@ -6,7 +6,7 @@ defined('S__SESSION_ID') || define('S__SESSION_ID', 'session_id');
 defined('C__CLIENT') || define('C__CLIENT', 'client');
 defined('S__CLIENT_AUTH') || define('S__CLIENT_AUTH', 'client_auth');
 defined('S__CLIENT_ID') || define('S__CLIENT_ID', 'client_id');
-defined('S__CLIENT_UID') || define('S__CLIENT_UID', 'client_uid');
+defined('S__CLIENT_UUID') || define('S__CLIENT_UUID', 'client_uuid');
 defined('S__PASSWORD') || define('S__PASSWORD', 'password');
 defined('S__TOKEN') || define('S__TOKEN', 'token');
 defined('S__EMAIL') || define('S__EMAIL', 'email');
@@ -411,7 +411,7 @@ defined('CURRENCY_CODES') || define('CURRENCY_CODES', [
   'Sao Tome And Principe Dobra' => 'STN',
   'El Salvador Colon' => 'SVC',
   'Syria Pound' => 'SYP',
-  'eSwatini Lilangeni' => 'SZL',
+  'Swatini Lilangeni' => 'SZL',
   'Thailand Baht' => 'THB',
   'Tajikistan Somoni' => 'TJS',
   'Turkmenistan Manat' => 'TMT',

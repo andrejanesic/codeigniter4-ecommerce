@@ -2,14 +2,12 @@
 
 namespace Ecommerce\Analytics\InternalAnalytics;
 
-use Ecommerce\Models\UIDModel;
+use CodeIgniter\Model;
 
-class VisitModel extends UIDModel {
+class VisitModel extends Model {
 
-  protected $name = 'visit';
   protected $table = 'visits';
   protected $primaryKey = 'visit_id';
-  protected $uidKey = 'visit_id';
   protected $allowedFields = [
     'session_id',
     'path'

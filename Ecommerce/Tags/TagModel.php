@@ -2,14 +2,13 @@
 
 namespace Ecommerce\Tags;
 
-use Ecommerce\Models\UIDModel;
+use CodeIgniter\Model;
 
-class TagModel extends UIDModel {
+class TagModel extends Model {
 
-  protected $name = 'tag';
   protected $table = 'tags';
   protected $primaryKey = 'tag_id';
-  protected $uidKey = 'tag_id';
+  protected $useSoftDeletes = true;
   protected $allowedFields = [
     'client_id',
     'value'

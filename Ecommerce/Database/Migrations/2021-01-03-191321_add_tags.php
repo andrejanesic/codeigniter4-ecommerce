@@ -22,6 +22,8 @@ class AddTags extends Migration {
 				'constraint' => 50
 			],
 			'created_at DATETIME DEFAULT CURRENT_TIMESTAMP',
+			'updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
+			'deleted_at DATETIME DEFAULT NULL',
 		]);
 		$this->forge->addKey('tag_id', TRUE);
 		$this->forge->createTable('tags');

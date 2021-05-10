@@ -13,9 +13,9 @@ class AddClients extends Migration {
 				'unsigned'       => true,
 				'auto_increment' => true,
 			],
-			'client_uid' => [
+			'client_uuid' => [
 				'type'       => 'VARCHAR',
-				'constraint' => 255,
+				'constraint' => 16,
 				'unique'     => true,
 			],
 			'password' => [
@@ -85,6 +85,7 @@ class AddClients extends Migration {
 			],
 			'created_at DATETIME DEFAULT CURRENT_TIMESTAMP',
 			'updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
+			'deleted_at DATETIME DEFAULT NULL',
 		]);
 		$this->forge->addKey('client_id', TRUE);
 		$this->forge->createTable('clients');
