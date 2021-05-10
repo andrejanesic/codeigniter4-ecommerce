@@ -2,13 +2,16 @@
 
 namespace Ecommerce\Controllers;
 
+use CodeIgniter\API\ResponseTrait;
 use CodeIgniter\Controller;
 use Ecommerce\Config\Services;
 
 /**
- * Simple plug-and-play controller for managing 
+ * Simple plug-and-play controller for accepting View and Click requests.
  */
-class Page extends Controller {
+class Analytics extends Controller {
+
+  use ResponseTrait;
 
   /**
    * Client service instance
@@ -40,11 +43,67 @@ class Page extends Controller {
 
     // load the analytics service
     $this->analytics = Services::analytics();
+  }
 
-    // record a new session/or continue the existing one
-    $this->analytics->addSession();
+  /**
+   * For adding Views from the front-end.
+   *
+   * @return mixed
+   */
+  public function addView() {
+    $id = session(S__SESSION_ID);
+    if (!$id) $id = $this->analytics->addSession();
+    if ($id === -1) return $this->failForbidden();
 
-    // record a visit
-    $this->analytics->addVisit();
+    $rules = [
+      'session_id' => 'required|is_not_unique[sessions.session_id]',
+      'path' => 'permit_empty|string',
+      'duration' => 'permit_empty|int'
+    ];
+
+    $request = service('request');
+    $data = [
+      'session_id' => $id,
+      'path' => $request->getVar('path'),
+      'duration' => $request->getVar('duration')
+    ];
+
+    $validation = service('validation');
+    $validation->setRules($rules);
+    if (!$validation->run($data)) return $this->failValidationError();
+
+    $this->analytics->addClick();
+    return $this->respond('', 200);
+  }
+
+  /**
+   * For adding Clicks from the front-end.
+   *
+   * @return mixed
+   */
+  public function addClick() {
+    $id = session(S__SESSION_ID);
+    if (!$id) $id = $this->analytics->addSession();
+    if ($id === -1) return $this->failForbidden();
+
+    $rules = [
+      'session_id' => 'required|is_not_unique[sessions.session_id]',
+      'path' => 'permit_empty|string',
+      'element_id' => 'required|string|max_length[100]'
+    ];
+
+    $request = service('request');
+    $data = [
+      'session_id' => $id,
+      'path' => $request->getVar('path'),
+      'element_id' => $request->getVar('element_id')
+    ];
+
+    $validation = service('validation');
+    $validation->setRules($rules);
+    if (!$validation->run($data)) return $this->failValidationError();
+
+    $this->analytics->addClick();
+    return $this->respond('', 200);
   }
 }
