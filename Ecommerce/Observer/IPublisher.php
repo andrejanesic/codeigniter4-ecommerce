@@ -2,8 +2,6 @@
 
 namespace Ecommerce\Observer;
 
-require_once 'Map.php';
-
 trait IPublisher {
 
   /**
@@ -32,12 +30,13 @@ trait IPublisher {
    * @return void
    */
   public function initObservers(): void {
+    $ecom = config('Ecommerce');
 
     // if key is not in map, skip
-    if (!isset($observerMap[static::class])) return;
+    if (!isset($ecom->observerMap[static::class])) return;
 
     // fetch the registered observer classes
-    $this->observers = $observerMap[static::class];
+    $this->observers = $ecom->observerMap[static::class];
   }
 
   /**

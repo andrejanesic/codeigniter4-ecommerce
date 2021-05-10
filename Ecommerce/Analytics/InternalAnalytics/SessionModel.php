@@ -4,6 +4,9 @@ namespace Ecommerce\Analytics\InternalAnalytics;
 
 use CodeIgniter\Model;
 
+/**
+ * Model used by the Analytics service to track sessions.
+ */
 class SessionModel extends Model {
 
   protected $table = 'sessions';

@@ -72,7 +72,7 @@ class Services extends CoreServices {
 
 		// configure your payment gateway here
 		try {
-			$gw = Omnipay::create('FooBar');
+			$gw = Omnipay::create(config('Ecommerce')->paymentGateway);
 			// $gw->...
 
 			return new OrderInterface($gw);

@@ -2,8 +2,6 @@
 
 namespace Ecommerce\Observer;
 
-require_once 'Map.php';
-
 interface IObserver {
 
   /**
