@@ -2,7 +2,7 @@
 
 namespace Ecommerce\Controllers;
 
-use CodeIgniter\Controller;
+use App\Controllers\BaseController;
 use Ecommerce\Config\Services;
 
 /**
@@ -10,7 +10,7 @@ use Ecommerce\Config\Services;
  * Analytics and client tracking are automatically handled, so all you have to
  * worry about is creating the actual view and response.
  */
-class Page extends Controller {
+class Page extends BaseController {
 
   /**
    * Client service instance
