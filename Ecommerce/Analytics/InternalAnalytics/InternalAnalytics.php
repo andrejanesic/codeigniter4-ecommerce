@@ -170,10 +170,18 @@ class InternalAnalytics implements AnalyticsInterface {
         }
       }
     );
-    
+
     return $id;
   }
 
+  /**
+   * Default implementation of the addClick method. Requires session_id, path
+   * and element_id. Propagates event with code IEvent::EVENT_CLICK_CREATE, and
+   * data array containing click_id, path and element_id.
+   *
+   * @param array $data
+   * @return integer
+   */
   public function addClick(array $data = null): int {
     $id = session(S__SESSION_ID);
     if (!$id) $id = $this->addSession();
@@ -201,9 +209,17 @@ class InternalAnalytics implements AnalyticsInterface {
 
     // publish the event
     $this->publish(
-      new class($id) implements IEvent {
-        public function __construct($id) {
-          $this->id = $id;
+      new class(
+        $id,
+        $request->getVar('path'),
+        $request->getVar('element_id')
+      ) implements IEvent {
+        public function __construct($id, $path, $el) {
+          $this->data = [
+            'click_id' => $id,
+            'element_id' => $el,
+            'path' => $path,
+          ];
         }
 
         public function code(): int {
@@ -211,11 +227,11 @@ class InternalAnalytics implements AnalyticsInterface {
         }
 
         public function data() {
-          return $this->id;
+          return $this->data;
         }
       }
     );
-    
+
     return $id;
   }
 }
