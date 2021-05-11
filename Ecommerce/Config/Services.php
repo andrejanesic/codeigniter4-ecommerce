@@ -10,6 +10,7 @@ use Ecommerce\Orders\OrderInterface;
 use Ecommerce\Analytics\InternalAnalytics\InternalAnalytics;
 use Ecommerce\Cart\InternalCart\InternalCart;
 use Ecommerce\Client\InternalClient\InternalClient;
+use Ecommerce\Orders\InternalOrders\InternalOrders;
 use Ecommerce\Tags\InternalTags\InternalTags;
 use Ecommerce\Tags\TagInterface;
 use Omnipay\Omnipay;
@@ -75,7 +76,7 @@ class Services extends CoreServices {
 			$gw = Omnipay::create(config('Ecommerce')->paymentGateway);
 			// $gw->...
 
-			return new OrderInterface($gw);
+			return new InternalOrders($gw);
 		} catch (\Exception $e) {
 			log_message('error', $e->getMessage());
 			return null;
