@@ -59,7 +59,7 @@ class InternalClient implements ClientInterface {
       $key => $val
     ];
     $this->publish(
-      new class ($eventData) implements IEvent {
+      new class($eventData) implements IEvent {
         public function __construct($data) {
           $this->data = $data;
         }
@@ -92,7 +92,7 @@ class InternalClient implements ClientInterface {
       $this->new();
     }
 
-    // save new client into session and cookie
+    // save client into session and cookie
     $this->save();
   }
 
@@ -102,24 +102,29 @@ class InternalClient implements ClientInterface {
    * @return void
    */
   private function new() {
-    // generate uuid
-    $uuid = randstr(16);
+    // generate new uuids until unique found, very rare case
+    $data = [];
+    while (true) {
+      // generate uuid
+      $uuid = randstr(16);
 
-    // insert into db
-    $data = [
-      'client_uuid' => $uuid
-    ];
-    if ($this->model === null)
-      $this->model = new ClientModel();
-    $id = $this->model->insert($data, true);
+      // insert into db
+      $data['client_uuid'] = $uuid;
+      if ($this->model === null)
+        $this->model = new ClientModel();
+      $id = $this->model->insert($data, true);
 
-    // set the values in the class
-    $data['client_id'] = $id;
-    $this->data = $data;
+      // if successfully inserted, set the values in the class
+      if ($id !== false) {
+        $data['client_id'] = $id;
+        $this->data = $data;
+        break;
+      }
+    }
 
     // publish the event
     $this->publish(
-      new class ($id) implements IEvent {
+      new class($id) implements IEvent {
         public function __construct($id) {
           $this->id = $id;
         }
@@ -141,40 +146,43 @@ class InternalClient implements ClientInterface {
    * @return boolean True if successfully loaded, else false
    */
   private function load(): bool {
-    $clientUuid = null;
-
     // try to load from session
-    if (session(S__CLIENT_AUTH) === true)
-      $clientUuid = session(S__CLIENT_UUID);
+    if (session(S__CLIENT_AUTH) === true && session(S__CLIENT_ID) !== null) {
+      // load model and find by id
+      if ($this->model === null)
+        $this->model = new ClientModel();
+      $data = $this->model->asArray()
+        ->where([
+          'client_id' => session(S__CLIENT_ID)
+        ])
+        ->first();
+      // if valid response
+      if (!empty($data) && is_array($data) && isset($data['client_uuid'])) {
+        $this->data = $data;
+        return true;
+      }
+    }
 
-    // try to load from cookie
-    if (!$clientUuid) {
-      helper('cookie');
-      $s = get_cookie(C__CLIENT);
-      if ($s !== null) {
-        $s = explode(':', $s);
+    // client data not in session, try to load from cookie
+    helper('cookie');
+    $s = get_cookie(C__CLIENT);
+    if ($s !== null) {
+      $s = explode(':', $s);
 
-        if (sizeof($s) === 2) {
-          $uuid = $s[0];
-          $token = $s[1];
+      if (sizeof($s) === 2) {
+        $uuid = $s[0];
+        $token = $s[1];
 
-          // check if the token is good
-          if ($this->authenticate(1, $uuid, $token))
-            $clientUuid = $uuid;
+        // check if the token is good
+        $data = null;
+        if (($data = $this->authenticate(1, $uuid, $token)) != null) {
+          $this->data = $data;
+          return true;
         }
       }
     }
 
-    // if loading succeeded, enter the data into the class
-    if ($clientUuid !== null) {
-      if ($this->model === null)
-        $this->model = new ClientModel();
-      $this->data = $this->model->asArray()
-        ->where(['client_uuid' => $clientUuid])
-        ->first();
-      return true;
-    }
-
+    // something failed
     return false;
   }
 
@@ -217,23 +225,23 @@ class InternalClient implements ClientInterface {
    * @param integer $mode 0 = password, 1 = token
    * @param string $uuid Client UID
    * @param string $secret Secret value
-   * @return boolean
+   * @return array|null Returns client data if authentication successful, null otherwise
    */
-  private function authenticate(int $mode, string $uuid, string $secret): bool {
+  private function authenticate(int $mode, string $uuid, string $secret): ?array {
     // firstly check if UID passes
     $validator = service('validation');
     $validator->setRules([
-      'client_uuid' => 'required|string|max_length[255]',
+      'client_uuid' => 'required|string|max_length[16]',
       'secret' => 'required|string|max_length[255]'
     ]);
-    
+
     if (!$validator->run([
       'client_uuid' => $uuid,
       'secret' => $secret
     ]))
-      return false;
+      return null;
 
-    // load model and find y UID
+    // load model and find by uuid
     if ($this->model === null)
       $this->model = new ClientModel();
     $data = $this->model->asArray()
@@ -241,10 +249,14 @@ class InternalClient implements ClientInterface {
         'client_uuid' => $uuid
       ])
       ->first();
-    if (!$data) return false;
+    if (!$data) return null;
 
     // check if the secret matches its hash
     $hash = $data[$mode === 0 ? 'password' : 'token'];
-    return password_verify($secret, $hash);
+    if (password_verify($secret, $hash)) {
+      return $data;
+    } else {
+      return null;
+    }
   }
 }

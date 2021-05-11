@@ -3,7 +3,7 @@
 namespace Ecommerce\Analytics\InternalAnalytics;
 
 use Ecommerce\Analytics\AnalyticsInterface;
-use Config\Services;
+use Ecommerce\Config\Services;
 use Ecommerce\Observer\IEvent;
 use Ecommerce\Observer\IPublisher;
 
