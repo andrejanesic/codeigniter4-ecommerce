@@ -43,6 +43,7 @@ class InternalAnalytics implements AnalyticsInterface {
     if (!$validation->run($data))
       return -1;
 
+    // create session model
     $model = new SessionModel();
     $id = $model->insert($data, true);
 
@@ -51,6 +52,11 @@ class InternalAnalytics implements AnalyticsInterface {
 
       // set the session id in session
       session()->set(S__SESSION_ID, $id);
+      session()->set(S__SESSION_UTM_SOURCE, $data['utm_source'] || null);
+      session()->set(S__SESSION_UTM_MEDIUM, $data['utm_medium'] || null);
+      session()->set(S__SESSION_UTM_CAMPAIGN, $data['utm_campaign'] || null);
+      session()->set(S__SESSION_UTM_TERM, $data['utm_term'] || null);
+      session()->set(S__SESSION_UTM_CONTENT, $data['utm_content'] || null);
 
       // publish the event
       $this->publish(
