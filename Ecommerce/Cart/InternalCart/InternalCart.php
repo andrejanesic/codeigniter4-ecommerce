@@ -86,7 +86,8 @@ class InternalCart implements CartInterface {
       if (!isset($items[$id])) {
         $items[$id] = [
           'price' => $p->getPrice(),
-          'quantity' => 1
+          'quantity' => 1,
+          'name' => $p->getName(),
         ];
       }
 

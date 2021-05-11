@@ -13,7 +13,7 @@ use Ecommerce\Orders\OrderInterface;
  * Analytics and client tracking are automatically handled, so all you have to
  * worry about is creating the actual view and response.
  */
-class Page extends Controller {
+abstract class Page extends Controller {
 
   use ResponseTrait;
 
@@ -52,26 +52,30 @@ class Page extends Controller {
   /**
    * Simple token checkout method.
    *
+   * @param array $items Order items. Defaults to cart items.
    * @return mixed
    */
-  public function orderToken() {
+  protected function orderToken(array $items = null) {
     $request = Services::request();
     $orders = EcommerceServices::orders();
+    $cart = EcommerceServices::cart();
+
+    // create items array from cart data
+    if ($items === null) {
+      $items = [];
+      foreach ($cart->toArray() as $id => $data) {
+        array_push($items, $data);
+      }
+    }
 
     // default result
     $res = OrderInterface::ORDER_FAIL;
 
     // make the config array
     $config = [
-      'token' => $request->getVar('eestoken'), // replace with your data
+      'token' => $request->getVar('token'), // replace with your data
       'currency' => strtoupper($request->getVar('currency')),
-      'items' => [
-        [
-          'name' => 'TestLineItem843',
-          'quantity' => 1,
-          'price' => 34.49
-        ],
-      ],
+      'items' => $items,
       'card' => [
         'firstName' => $request->getVar('firstname'),
         'lastName' => $request->getVar('lastname'),
@@ -83,7 +87,8 @@ class Page extends Controller {
         'billingAddress1' => $request->getVar('address_1'),
         'billingAddress2' => $request->getVar('address_2'),
         'billingPhone' => $request->getVar('phone'),
-        'demo' => true, // remove in production
+        // demo only when not in production
+        'demo' => strtolower(getenv('CI_ENVIRONMENT')) !== 'production',
       ]
     ];
 
@@ -94,16 +99,34 @@ class Page extends Controller {
     $res = $orders->order($config, $error);
 
     // check the result
-    if ($res === OrderInterface::ORDER_SUCCESS)
-      
-      // update client data here
-      //
-      // ...
-      //
+    if ($res === OrderInterface::ORDER_SUCCESS) {
+      // call success
+      $this->orderSuccess($config);
 
-      // return response to frontend script
+      // return response to frontend
       return $this->respond('', 200);
-    else
+    } else {
+      // call fail
+      $this->orderFail($config);
+
+      // respond to frontend
       return $this->failForbidden();
+    }
   }
+
+  /**
+   * Abstract method. Called when an order is successfully placed.
+   *
+   * @param array $orderConfig Order configuration.
+   * @return mixed
+   */
+  public abstract function orderSuccess(array $orderConfig);
+
+  /**
+   * Abstract method. Called when an order fails to be placed.
+   *
+   * @param array $orderConfig Order configuration.
+   * @return mixed
+   */
+  public abstract function orderFail(array $orderConfig);
 }
