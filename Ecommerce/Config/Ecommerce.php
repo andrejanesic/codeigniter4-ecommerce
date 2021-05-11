@@ -1,6 +1,6 @@
 <?php
 
-namespace Config;
+namespace Ecommerce\Config;
 
 use CodeIgniter\Config\BaseConfig;
 
