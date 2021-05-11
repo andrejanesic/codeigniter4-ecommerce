@@ -2,6 +2,8 @@
 
 namespace Ecommerce\Observer;
 
+use Exception;
+
 trait IPublisher {
 
   /**
@@ -54,13 +56,30 @@ trait IPublisher {
   }
 
   /**
-   * Publish the event
+   * Publish the event.
    *
    * @param IEvent $ie
    * @return void
    */
   public function publish(IEvent $e): void {
-    foreach ($this->observers as $o)
-      $o->listen($e);
+    foreach ($this->observers as $o) {
+      try {
+        // ensure init method exists
+        if (!method_exists($o, 'init'))
+          continue;
+        $inst = $o::init();
+
+        // if failed to init, die
+        if (!$inst)
+          continue;
+
+        // ensure listen method exists
+        if (!method_exists($o, 'listen'))
+          continue;
+        $inst->listen($e);
+      } catch (Exception $e) {
+        log_message('error', $e->getTraceAsString());
+      }
+    }
   }
 }
