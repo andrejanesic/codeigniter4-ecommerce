@@ -13,20 +13,20 @@ interface IEvent {
   const EVENT_CLICK_CREATE   = 003;
 
   // Cart
-  const EVENT_CART_ADD      = 100;
-  const EVENT_CART_REMOVE   = 101;
+  const EVENT_CART_ADD       = 100;
+  const EVENT_CART_REMOVE    = 101;
   
   // Client
-  const EVENT_CLIENT_CREATE = 200;
-  const EVENT_CLIENT_UPDATE = 201;
+  const EVENT_CLIENT_CREATE  = 200;
+  const EVENT_CLIENT_UPDATE  = 201;
 
   // Order
-  const EVENT_ORDER_SUCCESS = 300;
-  const EVENT_ORDER_FAIL    = 301;
+  const EVENT_ORDER_SUCCESS  = 300;
+  const EVENT_ORDER_FAIL     = 301;
 
   // Tag
-  const EVENT_TAG_ADD       = 400;
-  const EVENT_TAG_REMOVE    = 401;
+  const EVENT_TAG_ADD        = 400;
+  const EVENT_TAG_REMOVE     = 401;
 
   /**
    * Get the event code
