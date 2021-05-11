@@ -83,7 +83,7 @@ class OrderInterface {
 
     // insert the new order and get the ID for Omnipay
     $id = $om->insert($orderData, true);
-    $orderData['order_id'] = $data['transactionId'] = $id;
+    $data['transactionId'] = $id;
 
     // place the transaction and capture the funds
     try {
@@ -98,6 +98,7 @@ class OrderInterface {
           'reference' => $reference
         ]);
         $orderData['reference'] = $reference;
+        $orderData['order_id'] = $id;
 
         // publish the event
         $this->publish(
