@@ -78,7 +78,7 @@ Example value in `$observerMap` mentioned above:
 ```php
 $observerMap = [
     AnalyticsInterface::class => [
-        $observerSegment // IObserver instance
+        ObserverClass::class // IObserver class name. ObserverClass::init() will be called to get instance
     ]
 ]
 ```
