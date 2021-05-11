@@ -7,10 +7,10 @@ interface IEvent {
   /* ----- Event codes ----- */
 
   // Analytics
-  const EVENT_SESSION_START = 000;
-  const EVENT_NEW_VISIT     = 001;
-  const EVENT_NEW_VIEW      = 002;
-  const EVENT_NEW_CLICK     = 003;
+  const EVENT_SESSION_CREATE = 000;
+  const EVENT_VISIT_CREATE   = 001;
+  const EVENT_VIEW_CREATE    = 002;
+  const EVENT_CLICK_CREATE   = 003;
 
   // Cart
   const EVENT_CART_ADD      = 100;

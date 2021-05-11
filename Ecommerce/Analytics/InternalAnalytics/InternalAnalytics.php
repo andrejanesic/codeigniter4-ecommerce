@@ -60,7 +60,7 @@ class InternalAnalytics implements AnalyticsInterface {
           }
 
           public function code(): int {
-            return IEvent::EVENT_SESSION_START;
+            return IEvent::EVENT_SESSION_CREATE;
           }
 
           public function data() {
@@ -111,7 +111,7 @@ class InternalAnalytics implements AnalyticsInterface {
         }
 
         public function code(): int {
-          return IEvent::EVENT_NEW_VISIT;
+          return IEvent::EVENT_VISIT_CREATE;
         }
 
         public function data() {
@@ -156,7 +156,7 @@ class InternalAnalytics implements AnalyticsInterface {
         }
 
         public function code(): int {
-          return IEvent::EVENT_NEW_VIEW;
+          return IEvent::EVENT_VIEW_CREATE;
         }
 
         public function data() {
@@ -201,7 +201,7 @@ class InternalAnalytics implements AnalyticsInterface {
         }
 
         public function code(): int {
-          return IEvent::EVENT_NEW_CLICK;
+          return IEvent::EVENT_CLICK_CREATE;
         }
 
         public function data() {
