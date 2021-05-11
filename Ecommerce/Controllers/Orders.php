@@ -13,7 +13,7 @@ use Ecommerce\Orders\OrderInterface;
  * Analytics and client tracking are automatically handled, so all you have to
  * worry about is creating the actual view and response.
  */
-abstract class Page extends Controller {
+abstract class Orders extends Controller {
 
   use ResponseTrait;
 
