@@ -33,6 +33,9 @@ class OrderInterface {
 
   /**
    * Place the order via token. Make sure to validate the data before sending!
+   * If successful, event with code IEvent::EVENT_ORDER_SUCCESS and order data
+   * is published. Otherwise, event with code IEvent::EVENT_ORDER_FAIL with
+   * error data is published.
    *
    * @param array $data Order data based on
    *                    https://github.com/thephpleague/omnipay#credit-card--payment-form-input
@@ -61,7 +64,7 @@ class OrderInterface {
       }
 
       // if sum is still 0, then all products are wrong
-      if ($data['amount'] === 0)
+      if ($data['amount'] == 0)
         return static::ORDER_ERROR_PRODUCTS_INVALID;
     }
 
@@ -80,7 +83,7 @@ class OrderInterface {
 
     // insert the new order and get the ID for Omnipay
     $id = $om->insert($orderData, true);
-    $data['transactionId'] = $id;
+    $orderData['order_id'] = $data['transactionId'] = $id;
 
     // place the transaction and capture the funds
     try {
