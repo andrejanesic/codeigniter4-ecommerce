@@ -67,6 +67,6 @@ class Ecommerce extends BaseConfig
 
 
   /* ----- Payment gateway ----- */
-  public $paymentGateway = 'FooBar'; // put the name of your Omnipay payment
-                                     // gateway here
+  public $paymentGateway = 'FooBar'; // put the class name of your Omnipay pay-
+                                     // -ment gateway here, e.g.: Foo::class
 }

@@ -5,15 +5,16 @@ namespace Ecommerce\Config;
 use CodeIgniter\Config\Services as CoreServices;
 use Ecommerce\Analytics\AnalyticsInterface;
 use Ecommerce\Cart\CartInterface;
-use Ecommerce\Client\ClientInterface;
+use Ecommerce\Contact\ContactInterface;
 use Ecommerce\Orders\OrderInterface;
 use Ecommerce\Analytics\InternalAnalytics\InternalAnalytics;
 use Ecommerce\Cart\InternalCart\InternalCart;
-use Ecommerce\Client\InternalClient\InternalClient;
+use Ecommerce\Contact\InternalContact\InternalContact;
 use Ecommerce\Orders\InternalOrders\InternalOrders;
 use Ecommerce\Tags\InternalTags\InternalTags;
 use Ecommerce\Tags\TagInterface;
-use Omnipay\Omnipay;
+use Ecommerce\Visitor\InternalVisitor\InternalVisitor;
+use Ecommerce\Visitor\VisitorInterface;
 
 class Services extends CoreServices {
 
@@ -32,17 +33,17 @@ class Services extends CoreServices {
 	}
 
 	/**
-	 * Service for client management.
+	 * Service for contact management.
 	 *
 	 * @param boolean $getShared
-	 * @return ClientInterface
+	 * @return ContactInterface
 	 */
-	public static function client($getShared = true): ClientInterface {
+	public static function contact($getShared = true): ContactInterface {
 		if ($getShared) {
-			return static::getSharedInstance('client');
+			return static::getSharedInstance('contact');
 		}
 
-		return new InternalClient();
+		return new InternalContact();
 	}
 
 	/**
@@ -71,10 +72,9 @@ class Services extends CoreServices {
 			return static::getSharedInstance('orders');
 		}
 
-		// configure your payment gateway here
 		try {
-			$gw = Omnipay::create(config('Ecommerce')->paymentGateway);
-			// $gw->...
+			$gw = config('Ecommerce')->paymentGateway;
+			$gw = new $gw;
 
 			return new InternalOrders($gw);
 		} catch (\Exception $e) {
@@ -95,5 +95,19 @@ class Services extends CoreServices {
 		}
 
 		return new InternalTags();
+	}
+
+	/**
+	 * Service for visitor management.
+	 *
+	 * @param boolean $getShared
+	 * @return VisitorInterface
+	 */
+	public static function visitor($getShared = true): VisitorInterface {
+		if ($getShared) {
+			return static::getSharedInstance('visitor');
+		}
+
+		return new InternalVisitor();
 	}
 }

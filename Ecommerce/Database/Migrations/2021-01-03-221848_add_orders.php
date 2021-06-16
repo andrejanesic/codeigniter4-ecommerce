@@ -18,7 +18,7 @@ class AddOrders extends Migration {
 				'constraint' => 8,
 				'unsigned'   => true
 			],
-			'client_id' => [
+			'contact_id' => [
 				'type'       => 'INT',
 				'constraint' => 8,
 				'unsigned'   => true

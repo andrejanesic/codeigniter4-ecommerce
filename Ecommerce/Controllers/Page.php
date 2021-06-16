@@ -37,16 +37,16 @@ class Page extends BaseController {
     // Do Not Edit This Line
     parent::initController($request, $response, $logger);
 
-    // load the client service
-    $this->client = Services::client();
+    // load visitor service
+    $this->visitor = Services::visitor();
 
-    // load the analytics service
+    // load analytics service
     $this->analytics = Services::analytics();
 
     // record a new session/or continue the existing one
-    $this->analytics->addSession();
+    //$this->analytics->addSession();
 
     // record a visit
-    $this->analytics->addVisit();
+    //$this->analytics->addVisit();
   }
 }

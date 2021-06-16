@@ -4,16 +4,16 @@ namespace Ecommerce\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class AddClients extends Migration {
+class AddContacts extends Migration {
 	public function up() {
 		$this->forge->addField([
-			'client_id' => [
+			'contact_id' => [
 				'type'           => 'INT',
 				'constraint'     => 8,
 				'unsigned'       => true,
 				'auto_increment' => true,
 			],
-			'client_uuid' => [
+			'contact_uuid' => [
 				'type'       => 'VARCHAR',
 				'constraint' => 16,
 				'unique'     => true,
@@ -87,11 +87,11 @@ class AddClients extends Migration {
 			'updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
 			'deleted_at DATETIME DEFAULT NULL',
 		]);
-		$this->forge->addKey('client_id', TRUE);
-		$this->forge->createTable('clients');
+		$this->forge->addKey('contact_id', TRUE);
+		$this->forge->createTable('contacts');
 	}
 
 	public function down() {
-		$this->forge->dropTable('clients');
+		$this->forge->dropTable('contacts');
 	}
 }

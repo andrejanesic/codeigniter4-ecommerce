@@ -8,6 +8,10 @@ defined('S__SESSION_UTM_MEDIUM') || define('S__SESSION_UTM_MEDIUM', 'utm_medium'
 defined('S__SESSION_UTM_CAMPAIGN') || define('S__SESSION_UTM_CAMPAIGN', 'utm_campaign');
 defined('S__SESSION_UTM_TERM') || define('S__SESSION_UTM_TERM', 'utm_term');
 defined('S__SESSION_UTM_CONTENT') || define('S__SESSION_UTM_CONTENT', 'utm_content');
+defined('S__VISITOR_ID') || define('S__VISITOR_ID', 'visitor_id');
+defined('S__VISITOR_UUID') || define('S__VISITOR_UUID', 'visitor_uuid');
+defined('S__VISITOR_TOKEN') || define('S__VISITOR_TOKEN', 'visitor_token');
+defined('C__VISITOR') || define('C__VISITOR', 'visitor');
 defined('C__CLIENT') || define('C__CLIENT', 'client');
 defined('S__CLIENT_AUTH') || define('S__CLIENT_AUTH', 'client_auth');
 defined('S__CLIENT_ID') || define('S__CLIENT_ID', 'client_id');

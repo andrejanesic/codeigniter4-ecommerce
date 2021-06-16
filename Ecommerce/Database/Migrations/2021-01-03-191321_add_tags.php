@@ -13,7 +13,7 @@ class AddTags extends Migration {
 				'unsigned'       => true,
 				'auto_increment' => true,
 			],
-			'client_id' => [
+			'contact_id' => [
 				'type'       => 'INT',
 				'constraint' => 8,
 			],

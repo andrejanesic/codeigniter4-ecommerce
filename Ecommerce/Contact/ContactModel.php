@@ -1,16 +1,16 @@
 <?php
 
-namespace Ecommerce\Client;
+namespace Ecommerce\Contact;
 
 use CodeIgniter\Model;
 
-class ClientModel extends Model {
+class ContactModel extends Model {
 
-  protected $table = 'clients';
-  protected $primaryKey = 'client_id';
+  protected $table = 'contacts';
+  protected $primaryKey = 'contact_id';
   protected $useSoftDeletes = true;
   protected $allowedFields = [
-    'client_uuid',
+    'contact_uuid',
     'password',
     'token',
     'email',

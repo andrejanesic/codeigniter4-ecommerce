@@ -1,32 +1,32 @@
 <?php
 
-namespace Ecommerce\Client\InternalClient;
+namespace Ecommerce\Contact\InternalContact;
 
-use Ecommerce\Client\ClientInterface;
-use Ecommerce\Client\ClientModel;
+use Ecommerce\Contact\ContactInterface;
+use Ecommerce\Contact\ContactModel;
 use Ecommerce\Observer\IEvent;
 use Ecommerce\Observer\IPublisher;
 
-class InternalClient implements ClientInterface {
+class InternalContact implements ContactInterface {
 
   use IPublisher;
 
   /**
-   * Client data
+   * Contact data
    *
    * @var array
    */
   private $data = null;
 
   /**
-   * ClientModel instance used by service
+   * ContactModel instance used by service
    *
-   * @var ClientModel
+   * @var ContactModel
    */
   private $model = null;
 
   /**
-   * The InternalClient class is used for managing clients internally (with
+   * The InternalContact class is used for managing clients internally (with
    * your own database.)
    */
   public function __construct() {
@@ -35,27 +35,27 @@ class InternalClient implements ClientInterface {
   }
 
   public function getId(): int {
-    return $this->data['client_id'];
+    return $this->data['contact_id'];
   }
 
   public function getData(): array {
     return $this->data;
   }
 
-  public function getClient(int $id): ?array {
-    $cm = new ClientModel();
+  public function getContact(int $id): ?array {
+    $cm = new ContactModel();
     return $cm->asArray()->find($id);
   }
 
   public function updateData(string $key, $val): void {
     $this->data[$key] = $val;
     if ($this->model === null)
-      $this->model = new ClientModel();
-    $this->model->update($this->data['client_id'], $this->data);
+      $this->model = new ContactModel();
+    $this->model->update($this->data['contact_id'], $this->data);
 
     // publish the event
     $eventData = [
-      'client_id' => $this->data['client_id'],
+      'contact_id' => $this->data['contact_id'],
       $key => $val
     ];
     $this->publish(
@@ -83,17 +83,41 @@ class InternalClient implements ClientInterface {
    */
   private function init(): void {
     // if already initialized, stop
-    if ($this->data !== null) return;
+    if ($this->checkContact()) return;
 
     // try to load from session and then from cookie
-    if (!$this->load()) {
+    // if (!($this->clientSessionToCookie() || $this->clientCookieToSession())) {
 
-      // loading failed, new client has to be created
-      $this->new();
-    }
+    //   // loading failed, new client has to be created
+    //   $this->newContact();
+    // }
+  }
 
-    // save client into session and cookie
-    $this->save();
+  /**
+   * Returns true if client is loaded in session and in cookie, and if values
+   * match.
+   *
+   * @return boolean
+   */
+  private function checkContact(): bool {
+    // if client not init in session, not init at all
+    if (session(S__CLIENT_AUTH) !== true) return false;
+    
+    // init in session, check if cookie
+    helper('cookie');
+    $s = get_cookie(C__CLIENT);
+    if ($s === null) return false;
+
+    // check if cookie in right format
+    $s = explode(':', $s);
+    if (sizeof($s) !== 2) return false;
+    $uuid = $s[0];
+    $token = $s[1];
+
+    // if UUID and token matche those in session, confirm
+    // (previously have been set by save())
+    return ($uuid == session(S__CLIENT_UUID)) &&
+      ($token == session(S__CLIENT_TOKEN));
   }
 
   /**
@@ -101,7 +125,7 @@ class InternalClient implements ClientInterface {
    *
    * @return void
    */
-  private function new() {
+  private function newContact() {
     // generate new uuids until unique found, very rare case
     $data = [];
     while (true) {
@@ -109,15 +133,17 @@ class InternalClient implements ClientInterface {
       $uuid = randstr(16);
 
       // insert into db
-      $data['client_uuid'] = $uuid;
+      $data['contact_uuid'] = $uuid;
       if ($this->model === null)
-        $this->model = new ClientModel();
+        $this->model = new ContactModel();
       $id = $this->model->insert($data, true);
 
       // if successfully inserted, set the values in the class
       if ($id !== false) {
-        $data['client_id'] = $id;
+        $data['contact_id'] = $id;
         $this->data = $data;
+        session()->set(S__CLIENT_AUTH, true);
+        session()->set(S__CLIENT_ID, $id);
         break;
       }
     }
@@ -145,19 +171,19 @@ class InternalClient implements ClientInterface {
    *
    * @return boolean True if successfully loaded, else false
    */
-  private function load(): bool {
+  private function clientSessionToCookie(): bool {
     // try to load from session
-    if (session(S__CLIENT_AUTH) === true && session(S__CLIENT_ID) !== null) {
+    if (session(S__CLIENT_AUTH) === true) {
       // load model and find by id
       if ($this->model === null)
-        $this->model = new ClientModel();
+        $this->model = new ContactModel();
       $data = $this->model->asArray()
         ->where([
-          'client_id' => session(S__CLIENT_ID)
+          'contact_id' => session(S__CLIENT_ID)
         ])
         ->first();
       // if valid response
-      if (!empty($data) && is_array($data) && isset($data['client_uuid'])) {
+      if (!empty($data) && is_array($data) && isset($data['contact_uuid'])) {
         $this->data = $data;
         return true;
       }
@@ -194,17 +220,17 @@ class InternalClient implements ClientInterface {
   private function save(): void {
     // set client as authenticated in session
     session()->set(S__CLIENT_AUTH, true);
-    $uuid = $this->data['client_uuid'];
+    $uuid = $this->data['contact_uuid'];
 
     // generate new token
     $tokenRaw = randstr(255);
-    $token = password_hash($tokenRaw, PASSWORD_DEFAULT);
+    $token = password_hash($tokenRaw, PASSWORD_DEFAULT); // MASSIVE slow-down caused by password_hash, and probably by password_verify too.
 
     // update the token in the class and in the db
     $this->data['token'] = $token;
     if ($this->model === null)
-      $this->model = new ClientModel();
-    $this->model->update($this->data['client_id'], [
+      $this->model = new ContactModel();
+    $this->model->update($this->data['contact_id'], [
       'token' => $token
     ]);
 
@@ -223,7 +249,7 @@ class InternalClient implements ClientInterface {
    * Checks whether secret matches client's credentials
    *
    * @param integer $mode 0 = password, 1 = token
-   * @param string $uuid Client UID
+   * @param string $uuid Contact UID
    * @param string $secret Secret value
    * @return array|null Returns client data if authentication successful, null otherwise
    */
@@ -231,22 +257,22 @@ class InternalClient implements ClientInterface {
     // firstly check if UID passes
     $validator = service('validation');
     $validator->setRules([
-      'client_uuid' => 'required|string|max_length[16]',
+      'contact_uuid' => 'required|string|max_length[16]',
       'secret' => 'required|string|max_length[255]'
     ]);
 
     if (!$validator->run([
-      'client_uuid' => $uuid,
+      'contact_uuid' => $uuid,
       'secret' => $secret
     ]))
       return null;
 
     // load model and find by uuid
     if ($this->model === null)
-      $this->model = new ClientModel();
+      $this->model = new ContactModel();
     $data = $this->model->asArray()
       ->where([
-        'client_uuid' => $uuid
+        'contact_uuid' => $uuid
       ])
       ->first();
     if (!$data) return null;
