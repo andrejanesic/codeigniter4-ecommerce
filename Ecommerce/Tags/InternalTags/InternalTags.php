@@ -12,13 +12,24 @@ class InternalTags implements TagInterface {
 
   use IPublisher;
 
-  public function addTag(string $value, int $client = null): void {
-    if ($client === null)
-      $client = Services::client()->getId();
-    if ($client === null) return;
+  /**
+   * Adds tag to contact. If ID is null, updates the contact, then refreshes.
+   *
+   * @param string $value Tag value.
+   * @return void
+   */
+  public function addTag(string $value): void {
+    $contact = Services::contact()->getContact();
+    if ($contact == null) return;
+
+    if ($contact->getId() == null) {
+      if ($contact->isDirty()) $contact->update();
+      $contact->refresh();
+    }
+    if ($contact->getId() == null) return;
 
     $data = [
-      'client_id' => $client,
+      'contact_id' => $contact->getId(),
       'value' => $value
     ];
 
@@ -51,13 +62,26 @@ class InternalTags implements TagInterface {
     }
   }
 
-  public function removeTag(string $value, int $client = null): void {
-    if ($client === null)
-      $client = Services::client()->getId();
-    if ($client === null) return;
+
+  /**
+   * Removes tag from contact. If ID is null, updates the contact, then
+   * refreshes.
+   *
+   * @param string $value Tag value.
+   * @return void
+   */
+  public function removeTag(string $value): void {
+    $contact = Services::contact()->getContact();
+    if ($contact == null) return;
+
+    if ($contact->getId() == null) {
+      if ($contact->isDirty()) $contact->update();
+      $contact->refresh();
+    }
+    if ($contact->getId() == null) return;
 
     $data = [
-      'client_id' => $client,
+      'contact_id' => $contact->getId(),
       'value' => $value
     ];
     $tm = new TagModel();
@@ -84,14 +108,25 @@ class InternalTags implements TagInterface {
     );
   }
 
-  public function getTags(int $client = null): array {
-    if ($client === null)
-      $client = Services::client()->getId();
-    if ($client === null) return [];
+  /**
+   * Returns contact's tags. If ID is null, updates the contact, then
+   * refreshes.
+   *
+   * @return array Array of contact's tag values.
+   */
+  public function getTags(): array {
+    $contact = Services::contact()->getContact();
+    if ($contact == null) return;
+
+    if ($contact->getId() == null) {
+      if ($contact->isDirty()) $contact->update();
+      $contact->refresh();
+    }
+    if ($contact->getId() == null) return;
 
     $tm = new TagModel();
     $data = $tm->asArray()
-      ->where(['client_id' => $client])
+      ->where(['contact_id' => $contact->getId()])
       ->findAll();
 
     // get only the tag values

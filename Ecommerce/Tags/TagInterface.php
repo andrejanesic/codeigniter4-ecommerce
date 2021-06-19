@@ -5,28 +5,25 @@ namespace Ecommerce\Tags;
 interface TagInterface {
 
   /**
-   * Add tag to client
+   * Add tag to contact. Contact must be initialized.
    *
-   * @param string $value Tag value
-   * @param integer|null $client Client ID
+   * @param string $value Tag value.
    * @return void
    */
-  public function addTag(string $value, int $client = null): void;
+  public function addTag(string $value): void;
 
   /**
-   * Remove tag from client
+   * Remove tag from contact. Contact must be initialized.
    *
-   * @param string $value Tag value
-   * @param integer|null $client Client ID
+   * @param string $value Tag value.
    * @return void
    */
-  public function removeTag(string $value, int $client = null): void;
+  public function removeTag(string $value): void;
 
   /**
-   * Get client's tags
+   * Get contact's tags. Contact must be initialized.
    *
-   * @param integer|null $client Client ID
-   * @return array
+   * @return array Array of contact's tag values.
    */
-  public function getTags(int $client = null): array;
+  public function getTags(): array;
 }

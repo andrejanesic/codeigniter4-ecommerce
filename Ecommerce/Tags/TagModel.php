@@ -10,7 +10,7 @@ class TagModel extends Model {
   protected $primaryKey = 'tag_id';
   protected $useSoftDeletes = true;
   protected $allowedFields = [
-    'client_id',
+    'contact_id',
     'value'
   ];
 }
