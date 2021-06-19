@@ -1,8 +1,8 @@
 <?php
 
-include_once '../../Common.php';
-
 namespace Ecommerce\Visitor\InternalVisitor;
+
+include_once '../../Common.php';
 
 use CodeIgniter\Model;
 use Ecommerce\Observer\IPublisher;
@@ -41,7 +41,7 @@ class InternalVisitor implements VisitorInterface {
   /**
    * VisitorModel instance.
    */
-  private Model $model = null;
+  private ?Model $model = null;
 
   /**
    * Default constructor. Initialized from InternalVisitorService.

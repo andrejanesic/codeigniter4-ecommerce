@@ -19,14 +19,14 @@ class InternalVisitorService implements VisitorServiceInterface {
    * 
    * @var VisitorModel
    */
-  private Model $model = null;
+  private ?Model $model = null;
 
   /**
    * Current visitor instance.
    * 
    * @var VisitorInterface
    */
-  private VisitorInterface $visitor = null;
+  private ?VisitorInterface $visitor = null;
 
   /**
    * Constructor. Initializes observers and visitor data.
@@ -222,7 +222,7 @@ class InternalVisitorService implements VisitorServiceInterface {
     session()->set(S__VISITOR_TOKEN, $token);
   }
 
-  public function getVisitor(): InternalVisitor {
+  public function getVisitor(): VisitorInterface {
     return $this->initVisitor();
   }
 }

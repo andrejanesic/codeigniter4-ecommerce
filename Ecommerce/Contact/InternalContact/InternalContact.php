@@ -1,5 +1,7 @@
 <?php
 
+namespace Ecommerce\Contact\InternalContact;
+
 include_once '../../Common.php';
 
 use CodeIgniter\Model;
@@ -91,7 +93,7 @@ class InternalContact implements ContactInterface {
   /**
    * ContactModel model.
    */
-  private Model $model;
+  private ?Model $model;
 
   /**
    * Default constructor. Initialized from InternalContactService.

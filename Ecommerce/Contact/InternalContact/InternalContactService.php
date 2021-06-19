@@ -8,7 +8,7 @@ use Ecommerce\Contact\ContactInterface;
 use Ecommerce\Contact\ContactServiceInterface;
 use Ecommerce\Contact\ContactModel;
 use Ecommerce\Observer\IPublisher;
-use InternalContact;
+use Ecommerce\Contact\InternalContact\InternalContact;
 
 class InternalContactService implements ContactServiceInterface {
 
@@ -19,14 +19,14 @@ class InternalContactService implements ContactServiceInterface {
    *
    * @var ContactModel
    */
-  private Model $model = null;
+  private ?Model $model = null;
 
   /**
    * Current contact instance.
    * 
    * @var ContactInterface
    */
-  private ContactInterface $contact = null;
+  private ?ContactInterface $contact = null;
 
   /**
    * The InternalContact class is used for managing clients internally (with
