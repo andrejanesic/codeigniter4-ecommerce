@@ -5,6 +5,7 @@ namespace Ecommerce\Visitor\InternalVisitor;
 include_once __DIR__ . './../../Common.php';
 
 use CodeIgniter\Model;
+use Ecommerce\Observer\IEvent;
 use Ecommerce\Observer\IPublisher;
 use Ecommerce\Visitor\VisitorInterface;
 use Ecommerce\Visitor\VisitorModel;
@@ -58,6 +59,7 @@ class InternalVisitor implements VisitorInterface {
     int $contactId = null
   ) {
     $this->model = new VisitorModel();
+    $this->initObservers();
     $this->id = $id;
     $this->uuid = $uuid;
     $this->token = $token;
@@ -135,6 +137,21 @@ class InternalVisitor implements VisitorInterface {
 
     // update
     $this->model->where($where)->update(null, $data);
+    $this->publish(
+      new class($data) implements IEvent {
+        public function __construct($d) {
+          $this->data = $d;
+        }
+
+        public function code(): int {
+          return IEvent::EVENT_VISITOR_UPDATE;
+        }
+
+        public function data() {
+          return $this->data;
+        }
+      }
+    );
   }
 
   public function isDirty(): bool {

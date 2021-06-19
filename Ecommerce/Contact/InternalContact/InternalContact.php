@@ -7,8 +7,12 @@ include_once __DIR__ . './../../Common.php';
 use CodeIgniter\Model;
 use Ecommerce\Contact\ContactInterface;
 use Ecommerce\Contact\ContactModel;
+use Ecommerce\Observer\IEvent;
+use Ecommerce\Observer\IPublisher;
 
 class InternalContact implements ContactInterface {
+
+  use IPublisher;
 
   /**
    * Contact ID.
@@ -130,6 +134,7 @@ class InternalContact implements ContactInterface {
     string $lastIp = null
   ) {
     $this->model = new ContactModel();
+    $this->initObservers();
     $this->id = $id;
     $this->uuid = $uuid;
     $this->token = $token;
@@ -333,6 +338,21 @@ class InternalContact implements ContactInterface {
 
     if ($data === []) return;
     $this->model->update($this->id, $data);
+    $this->publish(
+      new class($data) implements IEvent {
+        public function __construct($d) {
+          $this->data = $d;
+        }
+
+        public function code(): int {
+          return IEvent::EVENT_CONTACT_UPDATE;
+        }
+
+        public function data() {
+          return $this->data;
+        }
+      }
+    );
   }
 
   public function isDirty(): bool {

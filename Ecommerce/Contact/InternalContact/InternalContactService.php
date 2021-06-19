@@ -9,6 +9,7 @@ use Ecommerce\Contact\ContactServiceInterface;
 use Ecommerce\Contact\ContactModel;
 use Ecommerce\Observer\IPublisher;
 use Ecommerce\Contact\InternalContact\InternalContact;
+use Ecommerce\Observer\IEvent;
 
 class InternalContactService implements ContactServiceInterface {
 
@@ -252,7 +253,23 @@ class InternalContactService implements ContactServiceInterface {
       // set contact in service
       $this->contact = new InternalContact($id, $uuid, $token);
 
-      // #TODO publish event
+      // publish event
+      $data['contact_id'] = $id;
+      $this->publish(
+        new class($data) implements IEvent {
+          public function __construct($d) {
+            $this->data = $d;
+          }
+
+          public function code(): int {
+            return IEvent::EVENT_VISITOR_CREATE;
+          }
+
+          public function data() {
+            return $this->data;
+          }
+        }
+      );
       return $this->contact;
     }
   }

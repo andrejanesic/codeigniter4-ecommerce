@@ -6,6 +6,7 @@ include_once __DIR__ . './../../Config/Constants.php';
 
 use CodeIgniter\Model;
 use CodeIgniter\Config\Services;
+use Ecommerce\Observer\IEvent;
 use Ecommerce\Visitor\VisitorInterface;
 use Ecommerce\Visitor\VisitorServiceInterface;
 use Ecommerce\Visitor\VisitorModel;
@@ -122,7 +123,23 @@ class InternalVisitorService implements VisitorServiceInterface {
             $i['visitor_token'],
             intval($i['contact_id'])
           );
-          // #TODO publish event
+
+          // publish event
+          $this->publish(
+            new class($i) implements IEvent {
+              public function __construct($d) {
+                $this->data = $d;
+              }
+
+              public function code(): int {
+                return IEvent::EVENT_VISITOR_CREATE;
+              }
+
+              public function data() {
+                return $this->data;
+              }
+            }
+          );
           return $this->visitor;
         }
       }
