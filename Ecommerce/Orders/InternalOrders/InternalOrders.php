@@ -16,11 +16,6 @@ class InternalOrders implements OrderInterface {
 
   use IPublisher;
 
-  const ORDER_SUCCESS                  = 0;
-  const ORDER_ERROR_NO_AMOUNT_NO_ITEMS = 100;
-  const ORDER_ERROR_PRODUCTS_INVALID   = 101;
-  const ORDER_FAIL                     = 102;
-
   /**
    * Omnipay gateway interface used by the class
    *
