@@ -4,6 +4,10 @@ namespace Ecommerce\Orders\Exceptions;
 
 use Exception;
 
+/**
+ * Thrown when the OrderInterface receives an order request with no products
+ * or total value specified.
+ */
 class NoProductsNoValueException extends Exception {
 
   public function errorMessage() {
