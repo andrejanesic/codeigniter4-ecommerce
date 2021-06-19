@@ -12,6 +12,6 @@ class VisitorModel extends Model {
   protected $allowedFields = [
     'visitor_uuid',
     'visitor_token',
-    'client_id'
+    'contact_id'
   ];
 }
