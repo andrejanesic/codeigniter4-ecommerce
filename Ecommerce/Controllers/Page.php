@@ -38,7 +38,7 @@ class Page extends BaseController {
     parent::initController($request, $response, $logger);
 
     // load visitor service
-    $this->visitor = Services::visitor();
+    $this->visitor = Services::visitor()->initVisitor();
 
     // load analytics service
     $this->analytics = Services::analytics();

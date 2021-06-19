@@ -14,8 +14,8 @@ use Ecommerce\Contact\InternalContact\InternalContactService;
 use Ecommerce\Orders\InternalOrders\InternalOrders;
 use Ecommerce\Tags\InternalTags\InternalTags;
 use Ecommerce\Tags\TagInterface;
-use Ecommerce\Visitor\InternalVisitor\InternalVisitor;
-use Ecommerce\Visitor\VisitorInterface;
+use Ecommerce\Visitor\InternalVisitor\InternalVisitorService;
+use Ecommerce\Visitor\VisitorServiceInterface;
 
 class Services extends CoreServices {
 
@@ -102,13 +102,13 @@ class Services extends CoreServices {
 	 * Service for visitor management.
 	 *
 	 * @param boolean $getShared
-	 * @return VisitorInterface
+	 * @return VisitorServiceInterface
 	 */
-	public static function visitor($getShared = true): VisitorInterface {
+	public static function visitor($getShared = true): VisitorServiceInterface {
 		if ($getShared) {
 			return static::getSharedInstance('visitor');
 		}
 
-		return new InternalVisitor();
+		return new InternalVisitorService();
 	}
 }
