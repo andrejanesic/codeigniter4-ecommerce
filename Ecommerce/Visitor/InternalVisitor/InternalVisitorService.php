@@ -2,12 +2,12 @@
 
 namespace Ecommerce\Visitor\InternalVisitor;
 
-use CodeIgniter\Config\Services;
 use CodeIgniter\Model;
-use Ecommerce\Observer\IPublisher;
+use CodeIgniter\Config\Services;
 use Ecommerce\Visitor\VisitorInterface;
 use Ecommerce\Visitor\VisitorServiceInterface;
 use Ecommerce\Visitor\VisitorModel;
+use Ecommerce\Observer\IPublisher;
 
 class InternalVisitorService implements VisitorServiceInterface {
 

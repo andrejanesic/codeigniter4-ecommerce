@@ -3,7 +3,7 @@
 namespace Ecommerce\Contact\InternalContact;
 
 use CodeIgniter\Model;
-use Config\Services;
+use CodeIgniter\Config\Services;
 use Ecommerce\Contact\ContactInterface;
 use Ecommerce\Contact\ContactServiceInterface;
 use Ecommerce\Contact\ContactModel;
