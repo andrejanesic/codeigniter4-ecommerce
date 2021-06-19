@@ -5,6 +5,8 @@ namespace Ecommerce\Orders\InternalOrders;
 use Ecommerce\Config\Services;
 use Ecommerce\Observer\IEvent;
 use Ecommerce\Observer\IPublisher;
+use Ecommerce\Orders\Exceptions\NoProductsNoValueException;
+use Ecommerce\Orders\Exceptions\ProductsTotalValueZeroException;
 use Ecommerce\Orders\OrderInterface;
 use Ecommerce\Orders\OrderModel;
 use Exception;
@@ -44,12 +46,12 @@ class InternalOrders implements OrderInterface {
    * @param [type] $error Error message will be stored here
    * @return int Order status code
    */
-  public function order(array $data, &$error = null): int {
+  public function order(array $data, &$error = null): bool {
     if (!isset($data['amount'])) {
 
       // we need either the total amount or the items as an array
       if (!isset($data['items']) || empty($data['items']))
-        return static::ORDER_ERROR_NO_AMOUNT_NO_ITEMS;
+        throw new NoProductsNoValueException();
 
       // calculate the total amount
       $data['amount'] = 0.0;
@@ -67,7 +69,7 @@ class InternalOrders implements OrderInterface {
 
       // if sum is still 0, then all products are wrong
       if ($data['amount'] == 0)
-        return static::ORDER_ERROR_PRODUCTS_INVALID;
+        throw new ProductsTotalValueZeroException();
     }
 
     // continue with data
@@ -119,7 +121,7 @@ class InternalOrders implements OrderInterface {
           }
         );
 
-        return static::ORDER_SUCCESS;
+        return true;
       } else {
         $error = $response->getMessage();
 
@@ -140,7 +142,7 @@ class InternalOrders implements OrderInterface {
           }
         );
 
-        return static::ORDER_FAIL;
+        return false;
       }
     } catch (Exception $e) {
       $error = $e->getMessage();
@@ -162,7 +164,7 @@ class InternalOrders implements OrderInterface {
         }
       );
 
-      return static::ORDER_FAIL;
+      return false;
     }
   }
 }

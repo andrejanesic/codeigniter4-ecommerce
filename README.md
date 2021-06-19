@@ -93,7 +93,7 @@ This way, any event — be it a view, click, or even order — can be propagated
 
    `git clone` this library into your `app/ThirdParty` directory
 
-2. **Install the dependencies:**
+2. **Install dependencies:**
 
    - [Omnipay](https://packagist.org/packages/omnipay/common): `composer require omnipay/common`
 
@@ -103,11 +103,13 @@ This way, any event — be it a view, click, or even order — can be propagated
 
    `'Ecommerce'  => APPPATH . 'ThirdParty/Ecommerce',`
 
-4. **Add validation rules:**
+4. **(Optional) Add validation rules:**
 
    Inside `app/Config/Validation.php`, locate the `$ruleSets` array, and append the following line:
 
    `\Ecommerce\Validation\OrderRules::class,`
+
+   This step is optional, but recommended, as you'll need to validate rules of POST requests before placing orders (supported currencies, required addresses, states, ZIP codes, etc.)
 
 5. **Configure:**
 
