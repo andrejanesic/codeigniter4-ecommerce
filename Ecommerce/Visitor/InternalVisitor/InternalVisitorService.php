@@ -8,6 +8,7 @@ use Ecommerce\Visitor\VisitorInterface;
 use Ecommerce\Visitor\VisitorServiceInterface;
 use Ecommerce\Visitor\VisitorModel;
 use Ecommerce\Observer\IPublisher;
+use Error;
 
 class InternalVisitorService implements VisitorServiceInterface {
 
@@ -44,7 +45,8 @@ class InternalVisitorService implements VisitorServiceInterface {
    *
    * @return void
    */
-  public function initVisitor(): ?VisitorInterface {
+  public function initVisitor(): VisitorInterface {
+    if ($this->visitor != null) return $this->visitor;
     helper('cookie');
 
     // try loading from session
@@ -122,6 +124,7 @@ class InternalVisitorService implements VisitorServiceInterface {
           return $this->visitor;
         }
       }
+      throw new Error('Couldn\'t generate visitor.');
     }
 
     // loading from cookie failed or cookie data invalid, set new
@@ -219,7 +222,7 @@ class InternalVisitorService implements VisitorServiceInterface {
     session()->set(S__VISITOR_TOKEN, $token);
   }
 
-  public function getVisitor(): ?InternalVisitor {
-    return $this->visitor;
+  public function getVisitor(): InternalVisitor {
+    return $this->initVisitor();
   }
 }

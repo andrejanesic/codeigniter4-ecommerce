@@ -3,7 +3,8 @@
 namespace Ecommerce\Analytics\InternalAnalytics;
 
 use Ecommerce\Analytics\AnalyticsInterface;
-use Ecommerce\Config\Services;
+use CodeIgniter\Config\Services;
+use Ecommerce\Config\Services as EcomServices;
 use Ecommerce\Observer\IEvent;
 use Ecommerce\Observer\IPublisher;
 
@@ -17,7 +18,7 @@ class InternalAnalytics implements AnalyticsInterface {
       return $id;
 
     $rules = [
-      'client_id' => 'required|is_not_unique[clients.client_id]',
+      'visitor_id' => 'required|is_not_unique[visitors.visitor_id]',
       'utm_source' => 'permit_empty|string|max_length[150]',
       'utm_medium' => 'permit_empty|string|max_length[150]',
       'utm_campaign' => 'permit_empty|string|max_length[150]',
@@ -27,16 +28,13 @@ class InternalAnalytics implements AnalyticsInterface {
     ];
 
     $data = [];
-    $request = service('request');
+    $request = Services::request();
     foreach ($rules as $k => $v)
       if (!isset($data[$k]))
         $data[$k] = $request->getVar($k);
 
     // get the client id if not previously set
-    if (!isset($data['client_id'])) {
-      $client = Services::client();
-      $data['client_id'] = $client->getId();
-    }
+    $data['visitor_id'] = EcomServices::visitor()->initVisitor()->getId();
 
     $validation = service('validation');
     $validation->setRules($rules);

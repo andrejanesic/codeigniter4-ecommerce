@@ -9,20 +9,17 @@ namespace Ecommerce\Visitor;
 interface VisitorServiceInterface {
 
   /**
-   * Returns the current visitor. If no visitor initialized, attempts to
-   * initialize from session, then from cookie. If both fail, returns null.
+   * Returns the current visitor.
    *
-   * @return VisitorInterface|null Returns VisitorInterface if successful, null
-   * otherwise.
+   * @return VisitorInterface Current visitor.
    */
-  public function getVisitor(): ?VisitorInterface;
+  public function getVisitor(): VisitorInterface;
 
   /**
-   * Attempts to load visitor from cookie. If successful, sets the visitor
-   * instance in the service.
+   * Attempts to load visitor from session, then from cookie. If both fail,
+   * makes a new visitor.
    *
-   * @return VisitorInterface|null Returns the VisitorInterface if successful,
-   * null otherwise.
+   * @return VisitorInterface Returns the VisitorInterface.
    */
-  public function initVisitor(): ?VisitorInterface;
+  public function initVisitor(): VisitorInterface;
 }

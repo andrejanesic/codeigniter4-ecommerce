@@ -12,7 +12,7 @@ class SessionModel extends Model {
   protected $table = 'sessions';
   protected $primaryKey = 'session_id';
   protected $allowedFields = [
-    'client_id',
+    'visitor_id',
     'utm_campaign',
     'utm_source',
     'utm_medium',

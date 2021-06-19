@@ -47,6 +47,7 @@ class InternalContactService implements ContactServiceInterface {
    * @return void
    */
   public function initContact(): ?InternalContact {
+    if ($this->contact != null) return $this->contact;
     helper('cookie');
 
     // try loading from session
