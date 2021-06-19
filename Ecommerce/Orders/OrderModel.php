@@ -12,7 +12,7 @@ class OrderModel extends Model {
   protected $allowedFields = [
     'reference',
     'session_id',
-    'client_id',
+    'contact_id',
     'status',
     'path',
     'products',

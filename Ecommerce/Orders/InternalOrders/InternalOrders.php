@@ -34,10 +34,10 @@ class InternalOrders implements OrderInterface {
   }
 
   /**
-   * Place the order via token. Make sure to validate the data before sending!
-   * If successful, event with code IEvent::EVENT_ORDER_SUCCESS and order data
-   * is published. Otherwise, event with code IEvent::EVENT_ORDER_FAIL with
-   * error data is published.
+   * Place the order via token. Make sure to validate the data and make/auth
+   * the contact before sending. If successful, event with code
+   * IEvent::EVENT_ORDER_SUCCESS and order data is published. Otherwise, event
+   * with code IEvent::EVENT_ORDER_FAIL with error data is published.
    *
    * @param array $data Order data based on
    *                    https://github.com/thephpleague/omnipay#credit-card--payment-form-input
@@ -74,7 +74,7 @@ class InternalOrders implements OrderInterface {
     $om = new OrderModel();
     $orderData = [
       'session_id' => Services::analytics()->getSession(),
-      'client_id' => Services::client()->getId(),
+      'contact_id' => Services::contact()->getContact()->getId(),
       'status' => 'PREPARE',
       'amount' => $data['amount']
     ];
