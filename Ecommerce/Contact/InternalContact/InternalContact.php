@@ -2,7 +2,7 @@
 
 namespace Ecommerce\Contact\InternalContact;
 
-include_once '../../Common.php';
+include_once __DIR__ . './../../Common.php';
 
 use CodeIgniter\Model;
 use Ecommerce\Contact\ContactInterface;
@@ -113,7 +113,7 @@ class InternalContact implements ContactInterface {
    * @param string $address2 Contact's address 2.
    * @param string $lastIp Contact's last IP address.
    */
-  protected function __construct(
+  public function __construct(
     int $id = null,
     string $uuid = null,
     string $token = null,

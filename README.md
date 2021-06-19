@@ -109,20 +109,14 @@ This way, any event — be it a view, click, or even order — can be propagated
 
    `\Ecommerce\Validation\OrderRules::class,`
 
-5. **Add Common.php:**
-
-   Open `app/Common.php` and append the following line to the end:
-
-   `require_once 'ThirdParty' . DIRECTORY_SEPARATOR . 'Ecommerce' . DIRECTORY_SEPARATOR . 'Common.php';`
-
-6. **Configure:**
+5. **Configure:**
 
    1. Make sure to set your database credentials in `.env` (as well as credentials for any APIs you wish to use)
-   2. Perform all migrations with `php spark migrate`
+   2. Perform all migrations with `php spark migrate -all -g default`
    3. Configure which third-party APIs you want to update when your analytics, cart, client, orders and other services update (in file `Observer/Map.php`)
    4. Install and configure your Omnipay [payment gateway](https://github.com/thephpleague/omnipay#payment-gateways)
 
-7. **Start using!**
+6. **Start using!**
 
    Use `Ecommerce\Controllers\Page` as your base controller to track website visitors and sessions.
 

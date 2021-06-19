@@ -2,6 +2,8 @@
 
 namespace Ecommerce\Visitor\InternalVisitor;
 
+include_once __DIR__ . './../../Config/Constants.php';
+
 use CodeIgniter\Model;
 use CodeIgniter\Config\Services;
 use Ecommerce\Visitor\VisitorInterface;
@@ -72,7 +74,7 @@ class InternalVisitorService implements VisitorServiceInterface {
         }
       }
 
-      $this->visitor = new InternalVisitor($sessionUuid, $sessionToken);
+      $this->visitor = new InternalVisitor(null, $sessionUuid, $sessionToken);
       return $this->visitor;
     }
 
@@ -124,7 +126,6 @@ class InternalVisitorService implements VisitorServiceInterface {
           return $this->visitor;
         }
       }
-      throw new Error('Couldn\'t generate visitor.');
     }
 
     // loading from cookie failed or cookie data invalid, set new
@@ -150,6 +151,7 @@ class InternalVisitorService implements VisitorServiceInterface {
       $this->visitor = new InternalVisitor($id, $uuid, $token);
       return $this->visitor;
     }
+    throw new Error('Couldn\'t generate visitor.');
   }
 
   /**

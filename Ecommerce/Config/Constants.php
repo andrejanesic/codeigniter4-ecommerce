@@ -1,5 +1,7 @@
 <?php
 
+namespace Ecommerce;
+
 /* ----- Session And Cookie Keys ---- */
 
 defined('S__SESSION_ID') || define('S__SESSION_ID', 'session_id');

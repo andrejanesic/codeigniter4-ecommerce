@@ -2,7 +2,7 @@
 
 namespace Ecommerce\Visitor\InternalVisitor;
 
-include_once '../../Common.php';
+include_once __DIR__ . './../../Common.php';
 
 use CodeIgniter\Model;
 use Ecommerce\Observer\IPublisher;
@@ -51,7 +51,7 @@ class InternalVisitor implements VisitorInterface {
    * @param string $token Visitor's token, unahshed.
    * @param int $contactId Visitor's contact ID.
    */
-  protected function __construct(
+  public function __construct(
     int $id = null,
     string $uuid = null,
     string $token = null,
