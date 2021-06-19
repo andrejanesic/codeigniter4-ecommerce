@@ -9,7 +9,8 @@ use Ecommerce\Contact\ContactInterface;
 use Ecommerce\Orders\OrderInterface;
 use Ecommerce\Analytics\InternalAnalytics\InternalAnalytics;
 use Ecommerce\Cart\InternalCart\InternalCart;
-use Ecommerce\Contact\InternalContact\InternalContact;
+use Ecommerce\Contact\ContactServiceInterface;
+use Ecommerce\Contact\InternalContact\InternalContactService;
 use Ecommerce\Orders\InternalOrders\InternalOrders;
 use Ecommerce\Tags\InternalTags\InternalTags;
 use Ecommerce\Tags\TagInterface;
@@ -38,12 +39,12 @@ class Services extends CoreServices {
 	 * @param boolean $getShared
 	 * @return ContactInterface
 	 */
-	public static function contact($getShared = true): ContactInterface {
+	public static function contact($getShared = true): ContactServiceInterface {
 		if ($getShared) {
 			return static::getSharedInstance('contact');
 		}
 
-		return new InternalContact();
+		return new InternalContactService();
 	}
 
 	/**

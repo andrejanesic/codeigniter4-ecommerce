@@ -1,288 +1,339 @@
 <?php
 
-namespace Ecommerce\Contact\InternalContact;
+include_once '../../Common.php';
 
+use CodeIgniter\Model;
 use Ecommerce\Contact\ContactInterface;
 use Ecommerce\Contact\ContactModel;
-use Ecommerce\Observer\IEvent;
-use Ecommerce\Observer\IPublisher;
 
 class InternalContact implements ContactInterface {
 
-  use IPublisher;
+  /**
+   * Contact ID.
+   */
+  private int $id = null;
 
   /**
-   * Contact data
+   * Contact UUID.
+   */
+  private string $uuid = null;
+
+  /**
+   * Contact token (non-hashed).
+   */
+  private string $token = null;
+
+  /**
+   * Contact's password (hashed).
+   */
+  private string $password = null;
+
+  /**
+   * Contact email.
+   */
+  private string $email = null;
+
+  /**
+   * Contact first name.
+   */
+  private string $firstName = null;
+
+  /**
+   * Contact last name.
+   */
+  private string $lastName = null;
+
+  /**
+   * Contact phone.
+   */
+  private string $phone = null;
+
+  /**
+   * Contact country.
+   */
+  private string $country = null;
+
+  /**
+   * Contact state.
+   */
+  private string $state = null;
+
+  /**
+   * Contact city.
+   */
+  private string $city = null;
+
+  /**
+   * Contact zip.
+   */
+  private string $zip = null;
+
+  /**
+   * Contact address 1.
+   */
+  private string $address1 = null;
+
+  /**
+   * Contact address 2.
+   */
+  private string $address2 = null;
+
+  /**
+   * Contact last IP address.
+   */
+  private string $lastIp = null;
+
+  /**
+   * Indicates whether data was changed after reading.
+   */
+  private bool $dirty = false;
+
+  /**
+   * ContactModel model.
+   */
+  private Model $model;
+
+  /**
+   * Default constructor. Initialized from InternalContactService.
    *
-   * @var array
+   * @param integer $id Contact's ID.
+   * @param string $uuid Contact's UUID.
+   * @param string $token Contact's token, unhashed.
+   * @param string $email Contact's email.
+   * @param string $firstName Contact's first name.
+   * @param string $lastName Contact's last name.
+   * @param string $phone Contact's phone.
+   * @param string $country Contact's country.
+   * @param string $state Contact's state.
+   * @param string $city Contact's city.
+   * @param string $zip Contact's zip code.
+   * @param string $address1 Contact's address 1.
+   * @param string $address2 Contact's address 2.
+   * @param string $lastIp Contact's last IP address.
    */
-  private $data = null;
-
-  /**
-   * ContactModel instance used by service
-   *
-   * @var ContactModel
-   */
-  private $model = null;
-
-  /**
-   * The InternalContact class is used for managing clients internally (with
-   * your own database.)
-   */
-  public function __construct() {
-    $this->initObservers();
-    $this->init();
+  protected function __construct(
+    int $id = null,
+    string $uuid = null,
+    string $token = null,
+    string $email = null,
+    string $firstName = null,
+    string $lastName = null,
+    string $phone = null,
+    string $country = null,
+    string $state = null,
+    string $city = null,
+    string $zip = null,
+    string $address1 = null,
+    string $address2 = null,
+    string $lastIp = null
+  ) {
+    $this->model = new ContactModel();
+    $this->id = $id;
+    $this->uuid = $uuid;
+    $this->token = $token;
+    $this->email = $email;
+    $this->firstName = $firstName;
+    $this->lastName = $lastName;
+    $this->phone = $phone;
+    $this->country = $country;
+    $this->state = $state;
+    $this->city = $city;
+    $this->zip = $zip;
+    $this->address1 = $address1;
+    $this->address2 = $address2;
+    $this->lastIp = $lastIp;
   }
 
   public function getId(): int {
-    return $this->data['contact_id'];
+    return $this->id;
   }
 
-  public function getData(): array {
-    return $this->data;
+  public function getUuid(): string {
+    return $this->uuid;
   }
 
-  public function getContact(int $id): ?array {
-    $cm = new ContactModel();
-    return $cm->asArray()->find($id);
+  public function getToken(): string {
+    return $this->token;
   }
 
-  public function updateData(string $key, $val): void {
-    $this->data[$key] = $val;
-    if ($this->model === null)
-      $this->model = new ContactModel();
-    $this->model->update($this->data['contact_id'], $this->data);
-
-    // publish the event
-    $eventData = [
-      'contact_id' => $this->data['contact_id'],
-      $key => $val
-    ];
-    $this->publish(
-      new class($eventData) implements IEvent {
-        public function __construct($data) {
-          $this->data = $data;
-        }
-
-        public function code(): int {
-          return IEvent::EVENT_CLIENT_UPDATE;
-        }
-
-        public function data() {
-          return $this->data;
-        }
-      }
-    );
+  public function getEmail(): ?string {
+    return $this->email;
   }
 
-  /**
-   * Initializes the client. Must be called before the client can be used
-   * (call in constructor method.)
-   *
-   * @return void
-   */
-  private function init(): void {
-    // if already initialized, stop
-    if ($this->checkContact()) return;
-
-    // try to load from session and then from cookie
-    // if (!($this->clientSessionToCookie() || $this->clientCookieToSession())) {
-
-    //   // loading failed, new client has to be created
-    //   $this->newContact();
-    // }
+  public function getFirstname(): ?string {
+    return $this->firstName;
   }
 
-  /**
-   * Returns true if client is loaded in session and in cookie, and if values
-   * match.
-   *
-   * @return boolean
-   */
-  private function checkContact(): bool {
-    // if client not init in session, not init at all
-    if (session(S__CLIENT_AUTH) !== true) return false;
-    
-    // init in session, check if cookie
-    helper('cookie');
-    $s = get_cookie(C__CLIENT);
-    if ($s === null) return false;
-
-    // check if cookie in right format
-    $s = explode(':', $s);
-    if (sizeof($s) !== 2) return false;
-    $uuid = $s[0];
-    $token = $s[1];
-
-    // if UUID and token matche those in session, confirm
-    // (previously have been set by save())
-    return ($uuid == session(S__CLIENT_UUID)) &&
-      ($token == session(S__CLIENT_TOKEN));
+  public function getLastname(): ?string {
+    return $this->lastName;
   }
 
-  /**
-   * Creates a new client
-   *
-   * @return void
-   */
-  private function newContact() {
-    // generate new uuids until unique found, very rare case
+  public function getPhone(): ?string {
+    return $this->phone;
+  }
+
+  public function getCountry(): ?string {
+    return $this->country;
+  }
+
+  public function getState(): ?string {
+    return $this->state;
+  }
+
+  public function getCity(): ?string {
+    return $this->city;
+  }
+
+  public function getZip(): ?string {
+    return $this->zip;
+  }
+
+  public function getAddress1(): ?string {
+    return $this->address1;
+  }
+
+  public function getAddress2(): ?string {
+    return $this->address2;
+  }
+
+  public function getLastIp(): ?string {
+    return $this->lastIp;
+  }
+
+  public function refresh(): void {
+    // use available data to find rest
     $data = [];
-    while (true) {
-      // generate uuid
-      $uuid = randstr(16);
+    if ($this->id !== null) $data['contact_id'] = $this->id;
+    if ($this->uuid !== null) $data['contact_uuid'] = $this->uuid;
 
-      // insert into db
-      $data['contact_uuid'] = $uuid;
-      if ($this->model === null)
-        $this->model = new ContactModel();
-      $id = $this->model->insert($data, true);
+    // if still empty, cannot fetch, inadequate data
+    if ($data === []) return;
 
-      // if successfully inserted, set the values in the class
-      if ($id !== false) {
-        $data['contact_id'] = $id;
-        $this->data = $data;
-        session()->set(S__CLIENT_AUTH, true);
-        session()->set(S__CLIENT_ID, $id);
-        break;
-      }
-    }
-
-    // publish the event
-    $this->publish(
-      new class($id) implements IEvent {
-        public function __construct($id) {
-          $this->id = $id;
-        }
-
-        public function code(): int {
-          return IEvent::EVENT_CLIENT_CREATE;
-        }
-
-        public function data() {
-          return $this->id;
-        }
-      }
-    );
+    // fetch from db
+    $i = $this->model->asArray()->where($data)->first();
+    if (!is_array($i)) return;
+    $this->id = intval(keyornull($i, 'contact_id'));
+    $this->uuid = keyornull($i, 'contact_uuid');
+    $this->email = keyornull($i, 'email');
+    $this->firstName = keyornull($i, 'first_name');
+    $this->lastName = keyornull($i, 'last_name');
+    $this->phone = keyornull($i, 'phone');
+    $this->country = keyornull($i, 'country');
+    $this->state = keyornull($i, 'state');
+    $this->city = keyornull($i, 'city');
+    $this->zip = keyornull($i, 'zip');
+    $this->address1 = keyornull($i, 'address_1');
+    $this->address2 = keyornull($i, 'address_2');
+    $this->lastIp = keyornull($i, 'last_ip');
   }
 
-  /**
-   * Loads the client data from session and cookie
-   *
-   * @return boolean True if successfully loaded, else false
-   */
-  private function clientSessionToCookie(): bool {
-    // try to load from session
-    if (session(S__CLIENT_AUTH) === true) {
-      // load model and find by id
-      if ($this->model === null)
-        $this->model = new ContactModel();
-      $data = $this->model->asArray()
-        ->where([
-          'contact_id' => session(S__CLIENT_ID)
-        ])
-        ->first();
-      // if valid response
-      if (!empty($data) && is_array($data) && isset($data['contact_uuid'])) {
-        $this->data = $data;
-        return true;
-      }
-    }
-
-    // client data not in session, try to load from cookie
-    helper('cookie');
-    $s = get_cookie(C__CLIENT);
-    if ($s !== null) {
-      $s = explode(':', $s);
-
-      if (sizeof($s) === 2) {
-        $uuid = $s[0];
-        $token = $s[1];
-
-        // check if the token is good
-        $data = null;
-        if (($data = $this->authenticate(1, $uuid, $token)) != null) {
-          $this->data = $data;
-          return true;
-        }
-      }
-    }
-
-    // something failed
-    return false;
+  public function setToken(string $newToken): void {
+    if ($this->token === $newToken) return;
+    $this->dirty = true;
+    $this->token = $newToken;
   }
 
-  /**
-   * Saves the client data into session and cookie
-   *
-   * @return void
-   */
-  private function save(): void {
-    // set client as authenticated in session
-    session()->set(S__CLIENT_AUTH, true);
-    $uuid = $this->data['contact_uuid'];
-
-    // generate new token
-    $tokenRaw = randstr(255);
-    $token = password_hash($tokenRaw, PASSWORD_DEFAULT); // MASSIVE slow-down caused by password_hash, and probably by password_verify too.
-
-    // update the token in the class and in the db
-    $this->data['token'] = $token;
-    if ($this->model === null)
-      $this->model = new ContactModel();
-    $this->model->update($this->data['contact_id'], [
-      'token' => $token
-    ]);
-
-    // set the client's cookie
-    helper('cookie');
-    $str = $uuid . ':' . $tokenRaw;
-    $days = 3650;
-    set_cookie(C__CLIENT, $str, $days * 24 * 60 * 60);
-
-    // update data in session
-    foreach ($this->data as $k => $v)
-      session()->set($k, $v);
+  public function setPassword(string $newPassword): void {
+    $t = password_hash($newPassword, PASSWORD_DEFAULT);
+    if ($t === $this->password) return;
+    $this->dirty = true;
+    $this->password = $t;
   }
 
-  /**
-   * Checks whether secret matches client's credentials
-   *
-   * @param integer $mode 0 = password, 1 = token
-   * @param string $uuid Contact UID
-   * @param string $secret Secret value
-   * @return array|null Returns client data if authentication successful, null otherwise
-   */
-  private function authenticate(int $mode, string $uuid, string $secret): ?array {
-    // firstly check if UID passes
-    $validator = service('validation');
-    $validator->setRules([
-      'contact_uuid' => 'required|string|max_length[16]',
-      'secret' => 'required|string|max_length[255]'
-    ]);
+  public function setEmail(string $newEmail): void {
+    if ($this->email === $newEmail) return;
+    $this->dirty = true;
+    $this->email = $newEmail;
+  }
 
-    if (!$validator->run([
-      'contact_uuid' => $uuid,
-      'secret' => $secret
-    ]))
-      return null;
+  public function setFirstname(string $newFirstname): void {
+    if ($this->firstName === $newFirstname) return;
+    $this->dirty = true;
+    $this->firstName = $newFirstname;
+  }
 
-    // load model and find by uuid
-    if ($this->model === null)
-      $this->model = new ContactModel();
-    $data = $this->model->asArray()
-      ->where([
-        'contact_uuid' => $uuid
-      ])
-      ->first();
-    if (!$data) return null;
+  public function setLastname(string $newLastname): void {
+    if ($this->lastName === $newLastname) return;
+    $this->dirty = true;
+    $this->lastName = $newLastname;
+  }
 
-    // check if the secret matches its hash
-    $hash = $data[$mode === 0 ? 'password' : 'token'];
-    if (password_verify($secret, $hash)) {
-      return $data;
-    } else {
-      return null;
+  public function setPhone(string $newPhone): void {
+    if ($this->phone === $newPhone) return;
+    $this->dirty = true;
+    $this->phone = $newPhone;
+  }
+
+  public function setCountry(string $newConuntry): void {
+    if ($this->country === $newConuntry) return;
+    $this->dirty = true;
+    $this->country = $newConuntry;
+  }
+
+  public function setState(string $newState): void {
+    if ($this->state === $newState) return;
+    $this->dirty = true;
+    $this->state = $newState;
+  }
+
+  public function setCity(string $newCity): void {
+    if ($this->city === $newCity) return;
+    $this->dirty = true;
+    $this->city = $newCity;
+  }
+
+  public function setZip(string $newZip): void {
+    if ($this->zip === $newZip) return;
+    $this->dirty = true;
+    $this->zip = $newZip;
+  }
+
+  public function setAddress1(string $newAddress1): void {
+    if ($this->address1 === $newAddress1) return;
+    $this->dirty = true;
+    $this->address1 = $newAddress1;
+  }
+
+  public function setAddress2(string $newAddress2): void {
+    if ($this->address2 === $newAddress2) return;
+    $this->dirty = true;
+    $this->address2 = $newAddress2;
+  }
+
+  public function setLastIp(string $newLastIp): void {
+    if ($this->lastIp === $newLastIp) return;
+    $this->dirty = true;
+    $this->lastIp = $newLastIp;
+  }
+
+  public function update(): void {
+    if ($this->id === null) return;
+    if (!$this->dirty) return;
+
+    // populate data to update
+    $data = [];
+    if ($this->token != null) {
+      $data['contact_token'] = $this->token;
+      session()->set(S__CONTACT_TOKEN, $this->token);
     }
+    if ($this->password != null) $data['password'] = $this->password;
+    if ($this->email != null) $data['email'] = $this->email;
+    if ($this->firstName != null) $data['first_name'] = $this->firstName;
+    if ($this->lastName != null) $data['last_name'] = $this->lastName;
+    if ($this->phone != null) $data['phone'] = $this->phone;
+    if ($this->country != null) $data['country'] = $this->country;
+    if ($this->state != null) $data['state'] = $this->state;
+    if ($this->city != null) $data['city'] = $this->city;
+    if ($this->zip != null) $data['zip'] = $this->zip;
+    if ($this->address1 != null) $data['address_1'] = $this->address1;
+    if ($this->address2 != null) $data['address_2'] = $this->address2;
+    if ($this->lastIp != null) $data['last_ip'] = $this->lastIp;
+
+    if ($data === []) return;
+    $this->model->update($this->id, $data);
+  }
+
+  public function isDirty(): bool {
+    return $this->dirty;
   }
 }

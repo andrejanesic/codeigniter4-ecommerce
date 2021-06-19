@@ -57,7 +57,13 @@ abstract class Orders extends Controller {
    */
   protected function orderToken(array $items = null) {
     $request = Services::request();
+
+    
+
+    // get the orders service
     $orders = EcommerceServices::orders();
+
+    // get the cart service
     $cart = EcommerceServices::cart();
 
     // create items array from cart data

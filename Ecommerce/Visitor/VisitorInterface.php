@@ -4,7 +4,7 @@ namespace Ecommerce\Visitor;
 
 /**
  * Visitors are unidentified contacts. When a visitor signs in or creates their
- * account, their visitor entity is associated with their contact entity.
+ * account, their visitor entity must be associated with their contact entity.
  */
 interface VisitorInterface {
 
@@ -35,4 +35,36 @@ interface VisitorInterface {
    * @return integer|null Contact ID if set, null otherwise.
    */
   public function getContactId(): ?int;
+
+  /**
+   * Refreshes the visitor's data from the database. WARNING: queries the
+   * database. Use sparsely.
+   *
+   * @return void
+   */
+  public function refresh(): void;
+
+  /**
+   * Sets a new token on the visitor.
+   *
+   * @param string $newToken New token (unhashed).
+   * @return void
+   */
+  public function setToken(string $newToken): void;
+
+  /**
+   * Updates the visitor in the database with the latest data. WARNING: queries
+   * the database. Use sparsely.
+   *
+   * @return void
+   */
+  public function update(): void;
+
+  /**
+   * Returns whether data was changed after initial reading. If true, data
+   * should be updated by calling update(), otherwise changes are lost.
+   *
+   * @return boolean True if changed after reading, false otherwise.
+   */
+  public function isDirty(): bool;
 }

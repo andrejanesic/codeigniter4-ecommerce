@@ -23,6 +23,21 @@ if (!function_exists('randstr')) {
   }
 }
 
+if (!function_exists('ornull')) {
+
+  /**
+   * Checks if $key on $arr is set and returns $arr[$key] if true, null
+   * otherwise.
+   *
+   * @param array $arr Array to check.
+   * @param string $key Key for indexing.
+   * @return mixed|null Returns $arr[$key] if set, null otherwise.
+   */
+  function keyornull(array $arr, string $key) {
+    return (isset($arr[$key])) ? $arr[$key] : null;
+  }
+}
+
 /**
  * Requires config files of Ecommerce
  */

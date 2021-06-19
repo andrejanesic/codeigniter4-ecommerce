@@ -24,18 +24,11 @@ interface ContactInterface {
   public function getUuid(): string;
 
   /**
-   * Returns the contact's password. (Hashed.)
-   *
-   * @return string|null Contact's password, or null if not existent.
-   */
-  public function getPassword(): ?string;
-
-  /**
    * Returns the contact's token. (Hashed.)
    *
    * @return string|null Contact's token, or null if not existent.
    */
-  public function getToken(): ?string;
+  public function getToken(): string;
 
   /**
    * Returns the contact's email.
@@ -113,4 +106,132 @@ interface ContactInterface {
    * @return string|null Contact's last IP address, or null if not existent.
    */
   public function getLastIp(): ?string;
+
+  /**
+   * Refreshes the contact's data from the database. WARNING: queries the
+   * database. Use sparsely.
+   *
+   * @return void
+   */
+  public function refresh(): void;
+
+  /**
+   * Sets a new token on the contact.
+   *
+   * @param string $newToken New token (unhashed).
+   * @return void
+   */
+  public function setToken(string $newToken): void;
+
+  /**
+   * Sets a new password on the contact.
+   *
+   * @param string $newPassword New password (unhashed).
+   * @return void
+   */
+  public function setPassword(string $newPassword): void;
+
+  /**
+   * Sets a new email on the contact.
+   *
+   * @param string $newEmail New email.
+   * @return void
+   */
+  public function setEmail(string $newEmail): void;
+
+  /**
+   * Sets a new first name on the contact.
+   *
+   * @param string $newFirstname New first name.
+   * @return void
+   */
+  public function setFirstname(string $newFirstname): void;
+
+  /**
+   * Sets a new last name on the contact.
+   *
+   * @param string $newLastname New last name.
+   * @return void
+   */
+  public function setLastname(string $newLastname): void;
+
+  /**
+   * Sets a new phone number on the contact.
+   *
+   * @param string $newPhone New phone number.
+   * @return void
+   */
+  public function setPhone(string $newPhone): void;
+
+  /**
+   * Sets a new country on the contact.
+   *
+   * @param string $newCountry New country.
+   * @return void
+   */
+  public function setCountry(string $newCountry): void;
+
+  /**
+   * Sets a new state on the contact.
+   *
+   * @param string $newState New state.
+   * @return void
+   */
+  public function setState(string $newState): void;
+
+  /**
+   * Sets a new city on the contact.
+   *
+   * @param string $newCity New city.
+   * @return void
+   */
+  public function setCity(string $newCity): void;
+
+  /**
+   * Sets a new zip code on the contact.
+   *
+   * @param string $newZip New zip code.
+   * @return void
+   */
+  public function setZip(string $newZip): void;
+
+  /**
+   * Sets a new address 1 on the contact.
+   *
+   * @param string $newAddress1 New address 1.
+   * @return void
+   */
+  public function setAddress1(string $newAddress1): void;
+
+  /**
+   * Sets a new address 2 on the contact.
+   *
+   * @param string $newAddress2 New address 2.
+   * @return void
+   */
+  public function setAddress2(string $newAddress2): void;
+
+  /**
+   * Sets a new last IP address on the contact.
+   *
+   * @param string $newLastIp New IP address.
+   * @return void
+   */
+  public function setLastIp(string $newLastIp): void;
+
+  /**
+   * Updates the contact in the database with the latest data. WARNING: queries
+   * the database. Use sparsely.
+   *
+   * @return void
+   */
+  public function update(): void;
+
+  /**
+   * Returns whether data was changed after initial reading. If true, data
+   * should be updated by calling update(), otherwise changes are lost.
+   *
+   * @return boolean True if changed after reading, false otherwise.
+   */
+  public function isDirty(): bool;
 }

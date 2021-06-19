@@ -18,12 +18,12 @@ class AddContacts extends Migration {
 				'constraint' => 16,
 				'unique'     => true,
 			],
-			'password' => [
+			'contact_token' => [
 				'type'       => 'VARCHAR',
 				'constraint' => 255,
 				'null'       => true
 			],
-			'token' => [
+			'password' => [
 				'type'       => 'VARCHAR',
 				'constraint' => 255,
 				'null'       => true
@@ -33,12 +33,12 @@ class AddContacts extends Migration {
 				'constraint' => 100,
 				'null'       => true
 			],
-			'firstname' => [
+			'first_name' => [
 				'type'       => 'VARCHAR',
 				'constraint' => 50,
 				'null'       => true
 			],
-			'lastname' => [
+			'last_name' => [
 				'type'       => 'VARCHAR',
 				'constraint' => 50,
 				'null'       => true

@@ -8,29 +8,22 @@ defined('S__SESSION_UTM_MEDIUM') || define('S__SESSION_UTM_MEDIUM', 'utm_medium'
 defined('S__SESSION_UTM_CAMPAIGN') || define('S__SESSION_UTM_CAMPAIGN', 'utm_campaign');
 defined('S__SESSION_UTM_TERM') || define('S__SESSION_UTM_TERM', 'utm_term');
 defined('S__SESSION_UTM_CONTENT') || define('S__SESSION_UTM_CONTENT', 'utm_content');
+
+// visitor
 defined('S__VISITOR_ID') || define('S__VISITOR_ID', 'visitor_id');
 defined('S__VISITOR_UUID') || define('S__VISITOR_UUID', 'visitor_uuid');
 defined('S__VISITOR_TOKEN') || define('S__VISITOR_TOKEN', 'visitor_token');
 defined('C__VISITOR') || define('C__VISITOR', 'visitor');
-defined('C__CLIENT') || define('C__CLIENT', 'client');
-defined('S__CLIENT_AUTH') || define('S__CLIENT_AUTH', 'client_auth');
-defined('S__CLIENT_ID') || define('S__CLIENT_ID', 'client_id');
-defined('S__CLIENT_UUID') || define('S__CLIENT_UUID', 'client_uuid');
-defined('S__CLIENT_PASSWORD') || define('S__CLIENT_PASSWORD', 'password');
-defined('S__CLIENT_TOKEN') || define('S__CLIENT_TOKEN', 'token');
-defined('S__CLIENT_EMAIL') || define('S__CLIENT_EMAIL', 'email');
-defined('S__CLIENT_FIRSTNAME') || define('S__CLIENT_FIRSTNAME', 'firstname');
-defined('S__CLIENT_LASTNAME') || define('S__CLIENT_LASTNAME', 'lastname');
-defined('S__CLIENT_PHONE') || define('S__CLIENT_PHONE', 'phone');
-defined('S__CLIENT_COUNTRY') || define('S__CLIENT_COUNTRY', 'country');
-defined('S__CLIENT_STATE') || define('S__CLIENT_STATE', 'state');
-defined('S__CLIENT_CITY') || define('S__CLIENT_CITY', 'phone');
-defined('S__CLIENT_ZIP') || define('S__CLIENT_ZIP', 'zip');
-defined('S__CLIENT_ADDRESS_1') || define('S__CLIENT_ADDRESS_1', 'address_1');
-defined('S__CLIENT_ADDRESS_2') || define('S__CLIENT_ADDRESS_2', 'address_2');
-defined('S__CLIENT_LAST_IP') || define('S__CLIENT_LAST_IP', 'last_ip');
-defined('C__CART') || define('C__CART', 'cart');
+
+// contact
+defined('S__CONTACT_ID') || define('S__CONTACT_ID', 'contact_id');
+defined('S__CONTACT_UUID') || define('S__CONTACT_UUID', 'contact_uuid');
+defined('S__CONTACT_TOKEN') || define('S__CONTACT_TOKEN', 'contact_token');
+defined('C__CONTACT') || define('C__CONTACT', 'contact');
+
+// cart
 defined('S__CART') || define('S__CART', 'cart');
+defined('C__CART') || define('C__CART', 'cart');
 
 /* ----- Standardized data ----- */
 
