@@ -53,6 +53,14 @@ interface VisitorInterface {
   public function setToken(string $newToken): void;
 
   /**
+   * Sets a new contact ID on the visitor.
+   *
+   * @param int $newContactId New contact ID.
+   * @return void
+   */
+  public function setContactId(int $newContactId): void;
+
+  /**
    * Updates the visitor in the database with the latest data. WARNING: queries
    * the database. Use sparsely.
    *

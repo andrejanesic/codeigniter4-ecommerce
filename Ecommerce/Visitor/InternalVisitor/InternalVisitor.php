@@ -104,6 +104,12 @@ class InternalVisitor implements VisitorInterface {
     $this->token = $newToken;
   }
 
+  public function setContactId(int $newContactId): void {
+    if ($this->contactId == $newContactId) return;
+    $this->dirty = true;
+    $this->contactId = $newContactId;
+  }
+
   public function update(): void {
     if ($this->id === null || $this->uuid = null) return;
     if (!$this->dirty) return;
